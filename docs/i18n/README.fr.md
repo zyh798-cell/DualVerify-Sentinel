@@ -18,7 +18,7 @@
 [![Checks](https://img.shields.io/badge/Offline%20Checks-427%2B%20Passing-2EA043)](#11-%C3%A9tat-du-projet)
 [![Status](https://img.shields.io/badge/Status-Gen--1%20Stable-8250DF)](#11-%C3%A9tat-du-projet)
 
-[English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [Español](README.es.md) · **Français**
+[English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · **Français**
 
 </div>
 
@@ -75,8 +75,10 @@ git clone https://github.com/zyh798-cell/DualVerify-Sentinel.git
 cd DualVerify-Sentinel
 
 python -m venv .venv
-# Windows :
-.venv\Scripts\activate
+# Windows (PowerShell):
+.venv\Scripts\Activate.ps1
+# Windows (CMD):
+.venv\Scripts\activate.bat
 # Linux/macOS :
 source .venv/bin/activate
 
@@ -150,9 +152,16 @@ d'entrée pris en charge.
 ## 10. Limitations connues
 
 1. **Pas de bac à sable intra-processus** — voir section 9.
-2. **Windows d'abord** — la suppression par délai d'attente ne suit pas les
-   processus petits-enfants sous Windows ; le chemin de secours de nuclei suppose
-   une disposition locale `~/Tools/nuclei/`.
+2. **Windows d'abord** — le chemin de dépassement de délai sous Windows effectue
+   un nettoyage d'arbre de processus équipé sur le terrain (`taskkill /T /F`
+   s'exécute avant la destruction de la racine, tous les résultats consignés) ;
+   il est vérifié par un exercice contrôlé d'arbre à trois niveaux mais
+   **n'est pas une garantie absolue** — pas de vérification des résidus à
+   l'exécution, `rc=0` ne prouve pas que tout l'arbre a été nettoyé, et les
+   formes réelles des descendants de Nuclei ne sont pas vérifiées. Sur les
+   plateformes non Windows, la destruction d'arbre est ignorée (racine
+   uniquement). Le chemin de secours de nuclei suppose une disposition locale
+   `~/Tools/nuclei/`.
 3. **Aucune promesse d'exactitude de détection** — la sortie des outils est
    enregistrée telle quelle ; les résultats non vérifiés ne sont jamais marqués
    comme vulnérabilités confirmées.
@@ -179,6 +188,7 @@ d'entrée pris en charge.
 
 - **Licence** : MIT — voir [LICENSE](../../LICENSE).
 - **Politique de sécurité** : voir [SECURITY.md](../../SECURITY.md).
+- **Contribuer** : voir [CONTRIBUTING.md](../../CONTRIBUTING.md).
 - Les issues et pull requests sont bienvenues. Pour les signalements liés à la
   sécurité, suivez les consignes de SECURITY.md plutôt que d'ouvrir une issue
   publique.

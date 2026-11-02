@@ -18,7 +18,7 @@
 [![Checks](https://img.shields.io/badge/Offline%20Checks-427%2B%20Passing-2EA043)](#project-status)
 [![Status](https://img.shields.io/badge/Status-Gen--1%20Stable-8250DF)](#project-status)
 
-**English** · [中文](docs/i18n/README.zh-CN.md) · [日本語](docs/i18n/README.ja.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md)
+**English** · [中文](docs/i18n/README.zh-CN.md) · [日本語](docs/i18n/README.ja.md) · [한국어](docs/i18n/README.ko.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md)
 
 </div>
 
@@ -70,8 +70,10 @@ git clone https://github.com/zyh798-cell/DualVerify-Sentinel.git
 cd DualVerify-Sentinel
 
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
+# Windows (PowerShell):
+.venv\Scripts\Activate.ps1
+# Windows (CMD):
+.venv\Scripts\activate.bat
 # Linux/macOS:
 source .venv/bin/activate
 
@@ -137,8 +139,13 @@ supported entry point.
 ## 10. Known limitations
 
 1. **No in-process sandbox** — see section 9.
-2. **Windows-first** — process timeout kill does not track grandchildren on
-   Windows; the nuclei path fallback assumes one local `~/Tools/nuclei/` layout.
+2. **Windows-first** — the Windows timeout path performs fielded process-tree
+   cleanup (`taskkill /T /F` runs before the root kill, with every outcome
+   recorded); it is verified in a controlled three-layer drill but is **not an
+   absolute guarantee** — no runtime residual check, `rc=0` does not prove the
+   whole tree was cleaned, and real Nuclei descendant shapes are unverified. On
+   non-Windows platforms the tree kill is skipped (root kill only). The nuclei
+   path fallback assumes one local `~/Tools/nuclei/` layout.
 3. **No detection-correctness promise** — tool output is recorded verbatim;
    unverified results are never marked as confirmed vulnerabilities.
 4. **Linux/macOS unverified** — CI does not cover non-Windows platforms.
@@ -160,6 +167,7 @@ supported entry point.
 
 - **License**: MIT — see [LICENSE](LICENSE).
 - **Security policy**: see [SECURITY.md](SECURITY.md).
+- **Contributing**: see [CONTRIBUTING.md](CONTRIBUTING.md).
 - Issues and pull requests are welcome. For security-relevant reports, please
   follow the guidance in SECURITY.md rather than opening a public issue.
 

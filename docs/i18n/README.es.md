@@ -18,7 +18,7 @@
 [![Checks](https://img.shields.io/badge/Offline%20Checks-427%2B%20Passing-2EA043)](#11-estado-del-proyecto)
 [![Status](https://img.shields.io/badge/Status-Gen--1%20Stable-8250DF)](#11-estado-del-proyecto)
 
-[English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · **Español** · [Français](README.fr.md)
+[English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · **Español** · [Français](README.fr.md)
 
 </div>
 
@@ -74,8 +74,10 @@ git clone https://github.com/zyh798-cell/DualVerify-Sentinel.git
 cd DualVerify-Sentinel
 
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
+# Windows (PowerShell):
+.venv\Scripts\Activate.ps1
+# Windows (CMD):
+.venv\Scripts\activate.bat
 # Linux/macOS:
 source .venv/bin/activate
 
@@ -145,9 +147,15 @@ proceso (no implementadas). La CLI es el único punto de entrada soportado.
 ## 10. Limitaciones conocidas
 
 1. **Sin sandbox en el proceso** — ver sección 9.
-2. **Windows primero** — la eliminación por tiempo de espera no rastrea procesos
-   nietos en Windows; la ruta de reserva de nuclei asume un diseño local
-   `~/Tools/nuclei/`.
+2. **Windows primero** — la ruta de tiempo de espera en Windows realiza una
+   limpieza de árbol de procesos equipada sobre el terreno (`taskkill /T /F` se
+   ejecuta antes de matar la raíz, con todos los resultados registrados); está
+   verificada en un simulacro controlado de árbol de tres niveles, pero **no es
+   una garantía absoluta** — sin comprobación de residuos en tiempo de
+   ejecución, `rc=0` no prueba que todo el árbol quedara limpio, y las formas
+   reales de los descendientes de Nuclei no están verificadas. En plataformas
+   que no son Windows se omite el kill de árbol (solo raíz). La ruta de reserva
+   de nuclei asume un diseño local `~/Tools/nuclei/`.
 3. **Sin promesa de corrección de detección** — la salida de herramientas se
    registra textualmente; los resultados no verificados nunca se marcan como
    vulnerabilidades confirmadas.
@@ -174,6 +182,7 @@ proceso (no implementadas). La CLI es el único punto de entrada soportado.
 
 - **Licencia**: MIT — ver [LICENSE](../../LICENSE).
 - **Política de seguridad**: ver [SECURITY.md](../../SECURITY.md).
+- **Contribuir**: ver [CONTRIBUTING.md](../../CONTRIBUTING.md).
 - Issues y pull requests son bienvenidos. Para reportes relacionados con
   seguridad, siga la guía de SECURITY.md en lugar de abrir un issue público.
 

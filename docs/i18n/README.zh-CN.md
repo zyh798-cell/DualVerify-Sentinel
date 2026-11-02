@@ -18,7 +18,7 @@
 [![Checks](https://img.shields.io/badge/Offline%20Checks-427%2B%20Passing-2EA043)](#11-项目状态)
 [![Status](https://img.shields.io/badge/Status-Gen--1%20Stable-8250DF)](#11-项目状态)
 
-[English](../../README.md) · **中文** · [日本語](README.ja.md) · [Español](README.es.md) · [Français](README.fr.md)
+[English](../../README.md) · **中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md)
 
 </div>
 
@@ -69,8 +69,10 @@ git clone https://github.com/zyh798-cell/DualVerify-Sentinel.git
 cd DualVerify-Sentinel
 
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
+# Windows (PowerShell):
+.venv\Scripts\Activate.ps1
+# Windows (CMD):
+.venv\Scripts\activate.bat
 # Linux/macOS:
 source .venv/bin/activate
 
@@ -130,8 +132,11 @@ RunTicket 的 frozen dataclass 与私有注册表是 **API 加固**，不是沙�
 ## 10. 已知限制
 
 1. **无进程内沙箱** — 见第 9 节。
-2. **Windows 优先** — Windows 上进程超时杀灭不追踪孙进程；nuclei 路径回退
-   假设一种本地 `~/Tools/nuclei/` 布局。
+2. **Windows 优先** — Windows 超时路径已实现字段化进程树清理（先执行
+   `taskkill /T /F` 再兜底杀灭根进程，全部结果留痕）；该能力经受控三层进程树
+   演练验证，但**不是绝对保证**——无运行时残留确认、taskkill 返回 0 不等于
+   已确认整棵树清理完毕、真实 Nuclei 后代形态未验证。非 Windows 平台跳过树
+   清理（仅杀灭根进程）。nuclei 路径回退假设一种本地 `~/Tools/nuclei/` 布局。
 3. **不承诺检测正确性** — 工具输出按原样记录；未验证的结果绝不会标记为
    已确认漏洞。
 4. **Linux/macOS 未验证** — CI 未覆盖非 Windows 平台。
@@ -152,6 +157,7 @@ RunTicket 的 frozen dataclass 与私有注册表是 **API 加固**，不是沙�
 
 - **许可**：MIT — 见 [LICENSE](../../LICENSE)。
 - **安全政策**：见 [SECURITY.md](../../SECURITY.md)。
+- **贡献指南**：见 [CONTRIBUTING.md](../../CONTRIBUTING.md)。
 - 欢迎提交 Issue 与 Pull Request。安全相关报告请遵循 SECURITY.md 的指引，
   不要直接开公开 issue。
 

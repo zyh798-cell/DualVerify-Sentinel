@@ -18,7 +18,7 @@
 [![Checks](https://img.shields.io/badge/Offline%20Checks-427%2B%20Passing-2EA043)](#11-%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E7%8A%B6%E6%85%8B)
 [![Status](https://img.shields.io/badge/Status-Gen--1%20Stable-8250DF)](#11-%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E7%8A%B6%E6%85%8B)
 
-[English](../../README.md) · [中文](README.zh-CN.md) · **日本語** · [Español](README.es.md) · [Français](README.fr.md)
+[English](../../README.md) · [中文](README.zh-CN.md) · **日本語** · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md)
 
 </div>
 
@@ -71,8 +71,10 @@ git clone https://github.com/zyh798-cell/DualVerify-Sentinel.git
 cd DualVerify-Sentinel
 
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
+# Windows (PowerShell):
+.venv\Scripts\Activate.ps1
+# Windows (CMD):
+.venv\Scripts\activate.bat
 # Linux/macOS:
 source .venv/bin/activate
 
@@ -138,9 +140,14 @@ Python レベルのチェックを回避できます。強固な分離にはプ�
 ## 10. 既知の制限
 
 1. **プロセス内サンドボックスなし** — セクション 9 を参照。
-2. **Windows 優先** — Windows でのプロセスタイムアウト抹消は孫プロセスを
-   追跡しません。nuclei のパスフォールバックは特定の `~/Tools/nuclei/`
-   レイアウトを想定しています。
+2. **Windows 優先** — Windows のタイムアウト経路には実装済みのプロセスツリー
+   クリーンアップがあります（ルート kill の前に `taskkill /T /F` を実行し、
+   全結果を記録）。管理された 3 層プロセスツリー訓練で検証済みですが、
+   **絶対的な保証ではありません** — ランタイムの残存確認はなく、taskkill の
+   rc=0 はツリー全体の消去完了を証明せず、実 Nuclei の子孫プロセス形態は
+   未検証です。非 Windows ではツリー kill をスキップします（ルートのみ kill）。
+   nuclei のパスフォールバックは特定の `~/Tools/nuclei/` レイアウトを想定し
+   ています。
 3. **検出の正確性は保証しない** — ツール出力はそのまま記録され、未検証の
    結果が確認済み脆弱性として標識されることはありません。
 4. **Linux/macOS 未検証** — CI は非 Windows プラットフォームをカバーしません。
@@ -163,6 +170,7 @@ Python レベルのチェックを回避できます。強固な分離にはプ�
 
 - **ライセンス**：MIT — [LICENSE](../../LICENSE) を参照。
 - **セキュリティポリシー**：[SECURITY.md](../../SECURITY.md) を参照。
+- **コントリビューション**: [CONTRIBUTING.md](../../CONTRIBUTING.md) を参照。
 - Issue と Pull Request を歓迎します。セキュリティ関連の報告は、公開 issue を
   作成せず SECURITY.md のガイダンスに従ってください。
 
