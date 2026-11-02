@@ -1,77 +1,170 @@
+<div align="center">
+
 # DualVerify-Sentinel
 
-Authorization-gated local security checks for lab targets and explicitly
-authorized hosts. Rule-based engine (NOT model-driven): every execution step is
-policy-checked, journaled, and fail-closed.
+**Deterministic, authorization-gated security validation engine.**
 
-> 定位：A+B+C 下一代安全验证项目的安全工程基础层（授权门禁 C、可靠执行引擎 B，
-> 规划/决策 A 仍在演进）。不是已发布的 Vuln-Hunter 轻量版，也不共享其 Git 历史。
+`zyh798-cell` / `DualVerify-Sentinel` · Gen-1 Stable · MIT
 
-## ⚠️ 授权范围（必读）
+<img src="assets/banner.gif" alt="DualVerify-Sentinel — pixel-style animated banner showing the project title with a scanline sweep and data-flow accents" width="720">
 
-- 本工具**仅用于你拥有或运营的系统、本地靶场，或获得系统所有者明确书面授权的目标**。
-- 计划执行前必须提供机器可读的授权范围文件（scope JSON），并通过独立门禁校验。
-- 未授权、超范围、窗口过期或配置损坏的目标会被**拒绝执行**（fail-closed），不存在跳过授权的代码路径。
-- 无破坏性测试、无持久化、无 payload 构建、不外传发现的数据。
+**DualVerify-Sentinel — Deterministic Security Validation Engine**
+⚠️ **AUTHORIZED SECURITY TESTING ONLY**
 
-## 安装
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-0078D6?logo=windows&logoColor=white)](README.md#requirements)
+[![Platform](https://img.shields.io/badge/Platform-Linux%2FmacOS%20Unverified-6b7280)](README.md#known-limitations)
+[![Checks](https://img.shields.io/badge/Offline%20Checks-427%2B%20Passing-2EA043)](#project-status)
+[![Status](https://img.shields.io/badge/Status-Gen--1%20Stable-8250DF)](#project-status)
+
+**English** · [中文](docs/i18n/README.zh-CN.md) · [日本語](docs/i18n/README.ja.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md)
+
+</div>
+
+---
+
+## 1. What is this?
+
+DualVerify-Sentinel is a **rule-based security validation engine** (explicitly **NOT
+model-driven**): every execution step is policy-checked against a machine-readable
+authorization scope, journaled in a tamper-evident hash chain, and **fail-closed** —
+missing, corrupted, or expired authorization means *refusal*, never a skipped check.
+
+It is the security-engineering foundation layer (authorization gate + reliable
+execution engine) of a planned next-generation verification architecture. The
+planning/decision layer is intentionally deterministic in Gen-1.
+
+## 2. What can it do?
+
+| Capability | How it works |
+|---|---|
+| Authorization gate | Machine-readable scope JSON validated in an **isolated subprocess**; missing/corrupt/expired → REFUSED (exit 2). No bypass path exists. |
+| Run tickets | Adapters accept only tickets issued by the policy engine; scope hash, mode, target, window re-verified **independently at execution time**. |
+| Safe execution | 12-step check chain per step; no destructive techniques, no persistence, no payload building, no exfiltration of discovered data. |
+| Audit journal | Append-only hash chain (`seq`/`prev`/`h`, SHA-256); tamper/reorder detection; audit failure exits with code 3 instead of masquerading as a normal result. |
+| Deterministic decision loop | Explicit rules P0–P8: any refusal/abort/failure stops the loop; targets are **never** expanded. |
+| Task graph | State machine with hard budgets (max 32 nodes, spawn depth 2, 8 spawns); dynamic spawns gated by parent COMPLETED status. |
+| Optional tool adapters | `nuclei` (template scan) and `bandit` (static analysis) — gracefully SKIPPED with a preflight report if not installed. |
+| Honest reporting | Findings recorded as-is; unverified output is never labeled a confirmed vulnerability; known limitations are listed in every report. |
+
+## 3. Use cases
+
+- Validating your own lab targets and explicitly authorized hosts.
+- Running repeatable, evidence-producing security checks with a full audit trail.
+- As a foundation layer for building higher-level verification pipelines.
+
+## 4. Requirements
+
+| Requirement | Detail |
+|---|---|
+| Python | >= 3.10 (tested on 3.13.14 only) |
+| Third-party dependencies | **None** — standard library only |
+| OS | Windows **Verified**; Linux/macOS **Not Yet Verified** |
+| External tools (optional) | `nuclei`, `bandit` — skipped gracefully if absent |
+
+## 5. Installation
 
 ```bash
-# Python >= 3.10，零第三方依赖（纯标准库）
-pip install -e .          # 可编辑安装（开发）
-# 或
-pip install .             # 标准安装
+git clone https://github.com/zyh798-cell/DualVerify-Sentinel.git
+cd DualVerify-Sentinel
+
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# Linux/macOS:
+source .venv/bin/activate
+
+pip install .
 ```
 
-## 可选外部工具
+`pip install -e .` (editable install) is also supported for development.
 
-| 工具 | 用途 | 缺失时行为 |
-|---|---|---|
-| nuclei | 模板扫描（vuln_validation 及以上模式） | 步骤 SKIPPED（preflight 报告未安装），不崩溃 |
-| bandit | 源码静态分析 | 同上 |
+## 6. Basic usage
 
-nuclei 获取：https://github.com/projectdiscovery/nuclei/releases （放入 PATH 即可）。
-
-## 使用
+**Step 1 — validate the scope file (always do this first):**
 
 ```bash
-python -m vuln_hunter run --scope scripts/example-scope.json --mode safe_scan --target 127.0.0.1:8080
-# 或安装后：
-dvs run --scope ... --mode ... --target ...
+dvs gate-check scripts/example-scope.json
+# exit 0 = scope valid · exit 1 = refused
 ```
 
-- scope 样例见 `scripts/example-scope.json`（示例目标与示例时间窗口，**不是真实授权记录**）。
-- 退出码：`0` = 全部 COMPLETED；`1` = 运行完成但有失败/拒绝；`2` = gate/policy 级拒绝（未执行任何工具）；`3` = **审计故障**（journal 无法写入/校验，运行结果不予认证，不伪装为普通失败）。
-
-## 失败关闭（fail-closed）语义
-
-1. **门禁缺失/损坏/超时 = 拒绝**：scope 校验由 `vuln_hunter.gate_check` 以独立子进程执行；模块缺失、崩溃、超时或输出不可解析时，CLI 返回 REFUSED（exit 2）。也可直接运行 `dvs gate-check <scope.json>`（与 run 使用同一子进程门禁，exit 0=通过 / 1=拒绝）。
-2. **能力票据（RunTicket）**：适配器执行只接受 `PolicyEngine.issue_ticket()` 签发的票据；签发前验证目标范围、授权窗口；执行时由适配器基类**再次独立核验**（适配器 ID、scope 内容哈希、**票据/策略模式一致性**、票据/步骤目标一致性、target_kind 一致性、模式风险上限、目标范围、窗口）。任何不匹配 → REFUSED/ABORTED。
-3. **摘要 fail-closed**：任何未知状态计入 FAILED，新状态永远不会把汇总降级为成功。步骤必需字段缺失或适配器意外崩溃都会产生**有记录的 FAILED 步骤**（含 attempt_end/step_end），不会出现无记录的崩溃；同一 step id 不会重复执行。
-4. **决策循环**（`--loop`）：任何拒绝/中止/失败即停止；绝不扩大目标范围。
-5. **审计日志 hash-chain**：journal 每条记录带 `seq`/`prev`/`h`（sha256 链）；`vuln_hunter.journal.verify(path)` 全链校验，篡改/删除/重排可检；**尾部截断仅在外部保存 head 锚点时才可检**；损坏尾行时拒绝续写，写失败向上抛出（绝不静默）。运行报告内含审计锚点（run_end 时的链头+记录数+验证状态），**仅用于一致性核对**——外部可信锚点未实现，报告内锚点不能单独证明日志未被整体重写或截断。审计故障（journal 不可写/不可验证）以退出码 3 明确终止，绝不伪装成普通运行结果。
-
-## 已知限制与安全边界
-
-- **进程内边界**：RunTicket 的 frozen dataclass、私有注册表 `_REGISTRY` 是 API 加固，**不是沙箱**——敌意同进程代码可以绕过任何 Python 级检查。强隔离需要进程级措施（未实现）。CLI 是唯一受支持的入口。
-- **Windows 优先**：进程超时杀灭在 Windows 上不追踪孙进程；nuclei 路径回退含 `~/Tools/nuclei/` 本机布局假设。
-- **不承诺检测正确性**：工具输出按原样记录，未经验证的结果不会标记为已确认漏洞。
-
-## 测试
+**Step 2 — run a validation:**
 
 ```bash
-python tests/test_engine.py          # 引擎状态机/策略/重试
-python tests/test_decision.py        # 决策规则 P0-P8
-python tests/test_check_scope.py     # scope 门禁
-python tests/test_adapters_gate.py   # 适配器门禁负向用例（票据/kind/上限/伪造）
-python tests/test_gate_packaging.py  # 门禁打包定位
-python tests/test_journal_chain.py   # 审计日志 hash-chain 完整性
-python tests/test_cli_gate.py        # CLI gate-check 子命令
-python tests/test_s2_hardening.py    # 异常路径收敛/报告锚点关联/票据模式一致性
+dvs run --scope scripts/example-scope.json --mode safe_scan --target 127.0.0.1:8080
+# or: python -m vuln_hunter run --scope ... --mode ... --target ...
 ```
 
-全部通过（退出码 0）才算验收通过。以实际运行结果为准；本仓库不预设"全绿"声明。
+Modes (increasing risk ceiling): `passive` → `safe_scan` → `vuln_validation` →
+`attack_simulation` → `high_risk` (R0–R4). `nuclei` is only invoked at R2+.
 
-## 许可
+Exit codes: `0` all steps COMPLETED · `1` finished with failures/refusals ·
+`2` gate/policy-level refusal (nothing executed) · `3` **audit failure**
+(journal unwritable/unverifiable — results are not certified).
 
-MIT — 见 LICENSE。
+`scripts/example-scope.json` is a fictional example — **not a real authorization**.
+
+## 7. Scope semantics
+
+- Entries are matched by **parsed hostname equality** (an entry without a port
+  matches any port on that host). **CIDR ranges are NOT supported** — use
+  `host` or `host:port` entries.
+- The authorization window is re-checked **every execution step**; expiry mid-run
+  aborts further steps.
+- Scope content is hash-bound into each run ticket; changing the scope invalidates
+  outstanding tickets.
+- Filesystem-scoped steps skip only the network-scope check; all other policy
+  checks still apply.
+
+## 8. Authorization and safety
+
+> ⚠️ **Use this tool ONLY against systems you own or operate, local lab targets,
+> or hosts for which you hold explicit written authorization from the owner.**
+> Unauthorized, out-of-scope, expired-window, or corrupted configurations are
+> refused (fail-closed). There is no code path that skips authorization.
+
+The bundled example scope is fictional. Real engagements require a real,
+machine-readable authorization record — keep it outside this repository.
+
+## 9. API hardening is NOT a sandbox
+
+RunTicket's frozen dataclass and private registry are **API hardening**, not
+sandboxing — hostile in-process code can bypass any Python-level check. Strong
+isolation requires process-level measures (not implemented). The CLI is the only
+supported entry point.
+
+## 10. Known limitations
+
+1. **No in-process sandbox** — see section 9.
+2. **Windows-first** — process timeout kill does not track grandchildren on
+   Windows; the nuclei path fallback assumes one local `~/Tools/nuclei/` layout.
+3. **No detection-correctness promise** — tool output is recorded verbatim;
+   unverified results are never marked as confirmed vulnerabilities.
+4. **Linux/macOS unverified** — CI does not cover non-Windows platforms.
+5. **Journal tail truncation** — detectable only if an external head anchor was
+   saved; in-report anchors are for consistency checks only.
+6. **Gen-1 planner is a static template** — planning is deterministic, not
+   model-driven or adaptive.
+
+## 11. Project status
+
+- **Gen-1 is stable**: 18 offline test suites, 427+ checks passing locally
+  (Windows, Python 3.13.14). Packaging smoke-tested via wheel/sdist builds.
+- A **Gen-2 architecture** (a separate, future repository) is planned with
+  proposal/adjudication separation. Gen-2 work will not happen in this repository.
+- Full test commands are listed in the test suites under `tests/` — run them and
+  trust the actual results; this repository makes no pre-asserted "all green" claim.
+
+## 12. License & feedback
+
+- **License**: MIT — see [LICENSE](LICENSE).
+- **Security policy**: see [SECURITY.md](SECURITY.md).
+- Issues and pull requests are welcome. For security-relevant reports, please
+  follow the guidance in SECURITY.md rather than opening a public issue.
+
+---
+
+<div align="center">
+<sub>DualVerify-Sentinel · Deterministic Security Validation Engine · MIT © 2026 zyh798-cell</sub>
+</div>
