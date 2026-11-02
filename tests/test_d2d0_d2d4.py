@@ -9,6 +9,7 @@ Exit-code semantics under test (vuln_hunter/__main__.py L193-207):
 
 Run:  python tests/test_d2d0_d2d4.py
 """
+import ast
 import importlib.util
 import json
 import shutil
@@ -588,20 +589,204 @@ check("FI-08", ok1 and ok2 and h1 != h2 and ok1b and a1b["count"] == 3,
       f"h2={h2[:8]}…); same-path rebuild continues the chain (count=3)")
 
 # ---------------------------------------------------------------------------
-# D2-D-0 (6): repeated script runs & temp evidence hygiene of the first-run
-# script's evidence base — verified at the directory level (offline).
+# D2-D-0 (6): first-run script evidence-base contract (AST source check,
+# offline) + non-blocking %TEMP% residue diagnostic.
+#
+# Contract: tests/test_d2c_first_run.py must create its evidence/temp bases
+# via tempfile.mkdtemp with the STATIC prefixes "d2c-run-" and
+# "d2c-preflight-", each exactly once.  Changing these prefixes or replacing
+# mkdtemp with fixed paths breaks the contract and requires updating this
+# check with explicit authorization.
+#
+# AST proves source shape ONLY: it does NOT prove runtime reachability or
+# --execute gating semantics.  Calls constructed dynamically via
+# getattr/importlib/exec are outside static-analysis reach and are never
+# claimed to be detected.
+#
+# Classification of unresolvable calls (fail-closed policy):
+#   - confirmed mkdtemp with non-literal prefix  -> FAIL (never silent)
+#   - ambiguous/shadowed import bindings         -> unverifiable info;
+#     result decided by whether the static counts prove the contract
+#   - dynamically constructed calls              -> capability boundary
 # ---------------------------------------------------------------------------
 print("-" * 78)
-import re
+
+
+def _evidence_base_contract(tree):
+    """Evaluate the D2-C first-run evidence-base contract on a parsed AST.
+
+    Returns a dict: ok, problems, hits, other_static, unresolvable,
+    unattributed, notes.  Bindings: module table (import tempfile /
+    import tempfile as tf, dotted imports never resolve strictly to the
+    stdlib tempfile module) and function table (from tempfile import
+    mkdtemp [as alias]).  Module-level rebinds/deletions and `global`
+    declarations of bound names mark the binding unresolvable.
+    """
+    mod_bind = {}   # local name -> "tempfile" | ("dotted", name) | AMBIGUOUS
+    fn_bind = {}    # local name -> "tempfile.mkdtemp" | AMBIGUOUS
+    notes = []
+
+    def _bind(table, local, target, lineno):
+        if local in table and table[local] != target:
+            table[local] = "AMBIGUOUS"
+            notes.append(f"conflicting import binding for '{local}' "
+                         f"at line {lineno}")
+        else:
+            table[local] = target
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for al in node.names:
+                if al.asname:
+                    local = al.asname
+                    target = ("tempfile" if al.name == "tempfile"
+                              else ("dotted", al.name))
+                else:
+                    local = al.name.split(".")[0]
+                    target = ("tempfile" if al.name == "tempfile"
+                              else ("dotted", al.name))
+                _bind(mod_bind, local, target, node.lineno)
+        elif (isinstance(node, ast.ImportFrom) and node.level == 0
+              and node.module == "tempfile"):
+            for al in node.names:
+                if al.name == "*":
+                    notes.append(f"star import from tempfile at line "
+                                 f"{node.lineno}: function bindings "
+                                 f"cannot be resolved")
+                    continue
+                _bind(fn_bind, al.asname or al.name,
+                      f"tempfile.{al.name}", node.lineno)
+
+    # module-level shadowing / deletion (function-local assignments do NOT
+    # shadow the module namespace; `global` declarations do — conservative)
+    for stmt in tree.body:
+        named = []
+        if isinstance(stmt, ast.Assign):
+            named = [t for t in stmt.targets if isinstance(t, ast.Name)]
+        elif isinstance(stmt, (ast.AnnAssign, ast.AugAssign)):
+            named = [stmt.target] if isinstance(stmt.target, ast.Name) else []
+        elif isinstance(stmt, ast.Del):
+            named = [t for t in stmt.targets if isinstance(t, ast.Name)]
+        for t in named:
+            if t.id in mod_bind or t.id in fn_bind:
+                mod_bind[t.id] = "AMBIGUOUS"
+                if t.id in fn_bind:
+                    fn_bind[t.id] = "AMBIGUOUS"
+                notes.append(f"module-level rebind/deletion of '{t.id}' "
+                             f"at line {stmt.lineno}")
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Global):
+            for name in node.names:
+                if name in mod_bind or name in fn_bind:
+                    mod_bind[name] = "AMBIGUOUS"
+                    if name in fn_bind:
+                        fn_bind[name] = "AMBIGUOUS"
+                    notes.append(f"'global {name}' at line {node.lineno} — "
+                                 f"binding treated as unresolvable")
+
+    def _prefix(call):
+        """-> ("static", value) | ("default", None) | ("unresolvable", desc)."""
+        for kw in call.keywords:
+            if kw.arg is None:
+                return ("unresolvable", "**kwargs splat")
+            if kw.arg == "prefix":
+                v = kw.value
+                if isinstance(v, ast.Constant) and isinstance(v.value, str):
+                    return ("static", v.value)
+                if isinstance(v, ast.Constant):
+                    return ("unresolvable", f"non-str constant {v.value!r}")
+                return ("unresolvable", type(v).__name__)
+        if len(call.args) >= 2:   # mkdtemp(suffix, prefix, dir): args[1]
+            a1 = call.args[1]
+            if isinstance(a1, ast.Constant) and isinstance(a1.value, str):
+                return ("static", a1.value)
+            return ("unresolvable", "positional prefix not a static string")
+        return ("default", None)  # prefix omitted -> mkdtemp default "tmp"
+
+    targets = ("d2c-run-", "d2c-preflight-")
+    hits = {t: [] for t in targets}
+    other_static, unresolvable, unattributed = [], [], []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        f = node.func
+        evald = None
+        if (isinstance(f, ast.Attribute) and isinstance(f.value, ast.Name)
+                and f.attr == "mkdtemp"):
+            b = mod_bind.get(f.value.id)
+            if b == "tempfile":
+                evald = _prefix(node)
+            elif b is not None:   # dotted or AMBIGUOUS module binding
+                unattributed.append((node.lineno, f"{f.value.id}.mkdtemp"))
+        elif isinstance(f, ast.Name):
+            b = fn_bind.get(f.id)
+            if b == "tempfile.mkdtemp":
+                evald = _prefix(node)
+            elif b is not None:   # AMBIGUOUS function binding
+                unattributed.append((node.lineno, f.id))
+        if evald is None:
+            continue              # not an attributable mkdtemp call
+        status, val = evald
+        if status == "static":
+            if val in hits:
+                hits[val].append(node.lineno)
+            else:
+                other_static.append((val, node.lineno))
+        elif status == "default":
+            other_static.append(("<default:tmp>", node.lineno))
+        else:
+            unresolvable.append((node.lineno, val))
+
+    problems = []
+    for t in targets:
+        n = len(hits[t])
+        if n != 1:
+            problems.append(f'expected exactly 1 mkdtemp(prefix="{t}"), '
+                            f'found {n}' + (f" at lines {hits[t]}" if n else ""))
+    if unresolvable:
+        problems.append("mkdtemp call(s) with non-literal prefix — "
+                        "contract unverifiable (fail-closed): "
+                        f"{unresolvable}")
+    return {"ok": not problems, "problems": problems, "hits": hits,
+            "other_static": other_static, "unresolvable": unresolvable,
+            "unattributed": unattributed, "notes": notes}
+
+
+try:
+    _tree = ast.parse((ROOT / "tests" / "test_d2c_first_run.py")
+                      .read_text(encoding="utf-8"))
+except SyntaxError as _exc:
+    check("D0-21a", False,
+          f"source contract unverifiable: tests/test_d2c_first_run.py does "
+          f"not parse ({_exc})")
+else:
+    _r = _evidence_base_contract(_tree)
+    if _r["ok"]:
+        _note = ("evidence-base contract OK: " + ", ".join(
+            f'1× mkdtemp(prefix="{t}") @L{_r["hits"][t][0]}'
+            for t in ("d2c-run-", "d2c-preflight-")))
+    else:
+        _note = "; ".join(_r["problems"])
+    _extras = []
+    if _r["unattributed"]:
+        _extras.append("unattributed mkdtemp-shaped calls via ambiguous/"
+                       f"shadowed bindings: {_r['unattributed']} — contract "
+                       "provability decided by the static counts above")
+    if _r["other_static"]:
+        _extras.append(f"other static prefixes (diagnostic only): "
+                       f"{_r['other_static']}")
+    if _r["notes"]:
+        _extras.append("; ".join(_r["notes"]))
+    if _extras:
+        _note += " | " + " | ".join(_extras)
+    check("D0-21a", _r["ok"], _note)
+
+# Non-blocking %TEMP% residue observation (NOT a test: no PASS/FAIL/SKIP,
+# no rc impact; never creates, deletes or modifies any directory).
 temp_root = Path(tempfile.gettempdir())
-preflight_dirs = sorted(
-    p.name for p in temp_root.glob("d2c-run-*") if p.is_dir())
-run_dirs = sorted(
-    p.name for p in temp_root.glob("d2c-preflight-*") if p.is_dir())
-check("D0-21", len(preflight_dirs) >= 1 and len(set(preflight_dirs)) == len(preflight_dirs),
-      f"first-run evidence bases use unique mkdtemp prefixes "
-      f"(d2c-run-*: {len(preflight_dirs)} dirs, all unique) -> repeated runs "
-      "never overwrite earlier evidence")
+_residue = sorted(p.name for p in temp_root.glob("d2c-run-*") if p.is_dir())
+print(f"[info] d2c-run-* residue under %TEMP%: {len(_residue)} dir(s) "
+      f"({_residue if _residue else 'none'}) — diagnostic only, not scored")
 
 # ---------------------------------------------------------------------------
 print("=" * 78)
