@@ -1,0 +1,15 @@
+{
+  "_note": "EXAMPLE FILE ONLY - not a real authorization record. Window-closed demo: the window is deliberately EXPIRED so runs are ABORTED/REFUSED by the window check.",
+  "client": "local-lab (example file, not a real authorization record)",
+  "in_scope": [
+    "127.0.0.1"
+  ],
+  "out_of_scope": [
+    "everything else on this host and network"
+  ],
+  "window": "2026-10-27T15:11Z/2026-10-27T17:16Z",
+  "confirmed_by": "local-lab self-authorization (example file)",
+  "techniques": [
+    "non_destructive"
+  ]
+}

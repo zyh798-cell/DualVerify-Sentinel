@@ -1,0 +1,9 @@
+{
+  "_note": "EXAMPLE FILE ONLY - not a real authorization record. Targets are fictional (example.com / RFC1918 documentation ranges). Adjust window and confirmed_by to a real signed authorization before any use beyond examples.",
+  "client": "Example Corp (owner: Alice, CTO) - fictional example, not a real authorization",
+  "in_scope": ["staging.example.com", "10.0.0.0/24"],
+  "out_of_scope": ["prod.example.com", "third-party.payments.com", "production database"],
+  "window": "2026-10-29T00:00Z/2030-01-01T00:00Z",
+  "techniques": ["non_destructive"],
+  "confirmed_by": "Example: Alice via signed authorization email (fictional)"
+}

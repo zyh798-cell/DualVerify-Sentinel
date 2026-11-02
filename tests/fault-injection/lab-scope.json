@@ -1,0 +1,9 @@
+{
+  "_note": "EXAMPLE FILE ONLY - not a real authorization record. Used with the fault-injection mock servers on loopback; non-destructive techniques only.",
+  "client": "local-lab (example file, not a real authorization record)",
+  "in_scope": ["http://127.0.0.1:8080"],
+  "out_of_scope": ["everything else on this host and network"],
+  "window": "2026-10-29T00:00Z/2030-01-01T00:00Z",
+  "techniques": ["non_destructive"],
+  "confirmed_by": "local-lab self-authorization (example file)"
+}

@@ -1,0 +1,15 @@
+{
+  "_note": "EXAMPLE FILE ONLY - not a real authorization record. Local lab target (loopback) with a self-declared example window. Non-destructive techniques only.",
+  "client": "local-lab (example file, not a real authorization record)",
+  "in_scope": [
+    "127.0.0.1"
+  ],
+  "out_of_scope": [
+    "everything else on this host and network"
+  ],
+  "window": "2026-10-29T00:00Z/2030-01-01T00:00Z",
+  "confirmed_by": "local-lab self-authorization (example file)",
+  "techniques": [
+    "non_destructive"
+  ]
+}
