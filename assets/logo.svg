@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320" role="img">
+  <title>DualVerify-Sentinel logo</title>
+  <desc>Verification hexagon: neon-green hexagonal boundary with blue network nodes at the vertices, dual neon-green and blue check strokes inside, and a horizontal blue scan band crossing the hexagon.</desc>
+  <defs>
+    <clipPath id="dvs-hex-clip">
+      <polygon points="284,160 222,270 98,270 36,160 98,50 222,50"/>
+    </clipPath>
+  </defs>
+  <polygon points="284,160 222,270 98,270 36,160 98,50 222,50" fill="#0d1a2e" stroke="#39ff8e" stroke-width="10"/>
+  <g clip-path="url(#dvs-hex-clip)">
+    <rect x="30" y="140" width="260" height="40" fill="#123a5c"/>
+    <line x1="30" y1="140" x2="290" y2="140" stroke="#4da3ff" stroke-width="4"/>
+    <line x1="30" y1="180" x2="290" y2="180" stroke="#4da3ff" stroke-width="4"/>
+  </g>
+  <circle cx="284" cy="160" r="11" fill="#4da3ff"/>
+  <circle cx="222" cy="270" r="11" fill="#4da3ff"/>
+  <circle cx="98" cy="270" r="11" fill="#4da3ff"/>
+  <circle cx="36" cy="160" r="11" fill="#4da3ff"/>
+  <circle cx="98" cy="50" r="11" fill="#4da3ff"/>
+  <circle cx="222" cy="50" r="11" fill="#4da3ff"/>
+  <path d="M88 132 L152 230 L188 174" fill="none" stroke="#39ff8e" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M170 112 L216 184" fill="none" stroke="#4da3ff" stroke-width="16" stroke-linecap="round"/>
+</svg>

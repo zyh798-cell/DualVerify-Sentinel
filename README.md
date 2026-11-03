@@ -1,24 +1,35 @@
 <div align="center">
 
-# DualVerify-Sentinel
+<img src="assets/logo.svg" alt="DualVerify-Sentinel logo — verification hexagon with dual check strokes, network nodes and scan band" width="110">
 
-**Deterministic, authorization-gated security validation engine.**
+# DUALVERIFY-SENTINEL
 
-`zyh798-cell` / `DualVerify-Sentinel` · Gen-1 Stable · MIT
+### ENGINEERED FOR TRUST.
+### BUILT FOR CONTROL.
 
-<img src="assets/banner.gif" alt="DualVerify-Sentinel — pixel-style animated banner showing the project title with a scanline sweep and data-flow accents" width="720">
+**Policy-Driven Security Validation Engine**
 
-**DualVerify-Sentinel — Deterministic Security Validation Engine**
-⚠️ **AUTHORIZED SECURITY TESTING ONLY**
+Deterministic execution. Explicit authorization boundaries. Auditable security evidence.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+`zyh798-cell` / `DualVerify-Sentinel` · MIT
+
+<img src="assets/banner.gif" alt="DualVerify-Sentinel — animated banner: pixel title reveal, scanline sweep and data-flow accents" width="720">
+
+<img src="assets/honor-badge.svg" alt="GEN-1 STABLE PROJECT MILESTONE — self-reported, not a third-party award" width="500">
+<sub>GEN-1 STABLE · PROJECT MILESTONE · SELF-REPORTED · NOT A THIRD-PARTY AWARD</sub>
+
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-0078D6?logo=windows&logoColor=white)](README.md#requirements)
-[![Platform](https://img.shields.io/badge/Platform-Linux%2FmacOS%20Unverified-6b7280)](README.md#known-limitations)
-[![Checks](https://img.shields.io/badge/Offline%20Checks-427%2B%20Passing-2EA043)](#project-status)
-[![Status](https://img.shields.io/badge/Status-Gen--1%20Stable-8250DF)](#project-status)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-requirements)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#4-requirements)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#8-authorization-and-safety)
+[![Checks](https://img.shields.io/badge/Local%20Checks-427%2B%20Passing%20(local%20record)-2EA043)](#11-project-status)
 
 **English** · [中文](docs/i18n/README.zh-CN.md) · [日本語](docs/i18n/README.ja.md) · [한국어](docs/i18n/README.ko.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md)
+
+[Authorization](#authorization-gate) · [Policy Engine](#policy-engine-and-risk-ladder) · [TaskGraph](#taskgraph-orchestration) · [Tool Adapters](#tool-adapters-nuclei--bandit) · [Audit Journal](#audit-journal) · [Reports](#structured-reporting) · [Installation](#5-installation) · [Security](SECURITY.md)
+
+> ⚠️ **AUTHORIZED SECURITY TESTING ONLY**
 
 </div>
 
@@ -37,16 +48,31 @@ planning/decision layer is intentionally deterministic in Gen-1.
 
 ## 2. What can it do?
 
-| Capability | How it works |
-|---|---|
-| Authorization gate | Machine-readable scope JSON validated in an **isolated subprocess**; missing/corrupt/expired → REFUSED (exit 2). No bypass path exists. |
-| Run tickets | Adapters accept only tickets issued by the policy engine; scope hash, mode, target, window re-verified **independently at execution time**. |
-| Safe execution | 12-step check chain per step; no destructive techniques, no persistence, no payload building, no exfiltration of discovered data. |
-| Audit journal | Append-only hash chain (`seq`/`prev`/`h`, SHA-256); tamper/reorder detection; audit failure exits with code 3 instead of masquerading as a normal result. |
-| Deterministic decision loop | Explicit rules P0–P8: any refusal/abort/failure stops the loop; targets are **never** expanded. |
-| Task graph | State machine with hard budgets (max 32 nodes, spawn depth 2, 8 spawns); dynamic spawns gated by parent COMPLETED status. |
-| Optional tool adapters | `nuclei` (template scan) and `bandit` (static analysis) — gracefully SKIPPED with a preflight report if not installed. |
-| Honest reporting | Findings recorded as-is; unverified output is never labeled a confirmed vulnerability; known limitations are listed in every report. |
+Gen-1 runs as one deterministic pipeline — every capability below is enforced by explicit code paths, not by model judgment.
+
+### Authorization gate
+
+Machine-readable scope JSON validated in an **isolated subprocess**; missing/corrupt/expired → REFUSED (exit 2). No bypass path exists. Adapters accept only tickets issued by the policy engine; scope hash, mode, target and window are re-verified **independently at execution time**.
+
+### Policy engine and risk ladder
+
+Five modes with increasing risk ceilings (R0–R4, see [Basic usage](#6-basic-usage)). Explicit decision rules P0–P8: any refusal/abort/failure stops the loop; targets are **never** expanded.
+
+### TaskGraph orchestration
+
+State machine with hard budgets (max 32 nodes, spawn depth 2, 8 spawns); dynamic spawns gated by parent COMPLETED status.
+
+### Tool adapters (nuclei / bandit)
+
+`nuclei` (template scan) and `bandit` (static analysis) — gracefully SKIPPED with a preflight report if not installed. Safe execution: a 12-step check chain per step; no destructive techniques, no persistence, no payload building, no exfiltration of discovered data.
+
+### Audit journal
+
+Append-only hash chain (`seq`/`prev`/`h`, SHA-256); tamper/reorder detection; audit failure exits with code 3 instead of masquerading as a normal result.
+
+### Structured reporting
+
+Findings recorded as-is; unverified output is never labeled a confirmed vulnerability; known limitations are listed in every report.
 
 ## 3. Use cases
 

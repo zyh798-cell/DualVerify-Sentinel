@@ -1,24 +1,35 @@
 <div align="center">
 
-# DualVerify-Sentinel
+<img src="../../assets/logo.svg" alt="DualVerify-Sentinel ロゴ — デュアルチェック、ネットワークノード、スキャン帯つきの検証ヘキサゴン" width="110">
 
-**決定論的・認可ゲート付きセキュリティ検証エンジン。**
+# DUALVERIFY-SENTINEL
 
-`zyh798-cell` / `DualVerify-Sentinel` · Gen-1 Stable · MIT
+### ENGINEERED FOR TRUST.
+### BUILT FOR CONTROL.
 
-<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — ピクセル風アニメーションバナー。タイトルが1文字ずつ現れ、スキャンラインとデータフローのエフェクトが流れる" width="720">
+**ポリシー駆動のセキュリティ検証エンジン**
 
-**DualVerify-Sentinel — Deterministic Security Validation Engine**
-⚠️ **AUTHORIZED SECURITY TESTING ONLY**
+決定論的な実行。明示的な認可境界。監査可能なセキュリティ証跡。
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
+`zyh798-cell` / `DualVerify-Sentinel` · MIT
+
+<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — アニメーションバナー：ピクセルタイトル出現、スキャンライン、データフロー" width="720">
+
+<img src="../../assets/honor-badge.svg" alt="GEN-1 STABLE プロジェクトマイルストーン — 自己申告であり第三者の賞ではありません" width="500">
+<sub>GEN-1 STABLE · PROJECT MILESTONE · SELF-REPORTED · NOT A THIRD-PARTY AWARD</sub>
+
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-0078D6?logo=windows&logoColor=white)](#4-%E8%A6%81%E4%BB%B6)
-[![Platform](https://img.shields.io/badge/Platform-Linux%2FmacOS%20Unverified-6b7280)](#10-%E6%97%A2%E7%9F%A5%E3%81%AE%E5%88%B6%E9%99%90)
-[![Checks](https://img.shields.io/badge/Offline%20Checks-427%2B%20Passing-2EA043)](#11-%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E7%8A%B6%E6%85%8B)
-[![Status](https://img.shields.io/badge/Status-Gen--1%20Stable-8250DF)](#11-%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E7%8A%B6%E6%85%8B)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-要件)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#4-要件)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#8-認可と安全性)
+[![Checks](https://img.shields.io/badge/Local%20Checks-427%2B%20Passing%20(local%20record)-2EA043)](#11-プロジェクトの状態)
 
 [English](../../README.md) · [中文](README.zh-CN.md) · **日本語** · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md)
+
+[認可ゲート](#認可ゲート) · [ポリシーエンジン](#ポリシーエンジンとリスクラダー) · [TaskGraph](#taskgraph-オーケストレーション) · [ツールアダプタ](#ツールアダプタ-nuclei--bandit) · [監査ジャーナル](#監査ジャーナル) · [レポート](#構造化レポート) · [インストール](#5-インストール) · [セキュリティ](../../SECURITY.md)
+
+> ⚠️ **AUTHORIZED SECURITY TESTING ONLY**
 
 </div>
 
@@ -38,16 +49,31 @@ DualVerify-Sentinel は**ルールベースのセキュリティ検証エンジ�
 
 ## 2. 何ができるか
 
-| 機能 | 実装方式 |
-|---|---|
-| 認可ゲート | 機械可読な scope JSON を**独立サブプロセス**で検証。欠落/破損/期限切れ → REFUSED（終了コード 2）。バイパス経路は存在しません。 |
-| 実行チケット（RunTicket） | アダプタはポリシーエンジン発行のチケットのみ受諾。スコープハッシュ・モード・ターゲット・ウィンドウを**実行時に再独立検証**。 |
-| 安全な実行 | ステップごとに 12 項目のチェックチェーン。破壊的技術なし、永続化なし、ペイロード構築なし、発見データの外部送信なし。 |
-| 監査ジャーナル | 追加専用ハッシュチェーン（`seq`/`prev`/`h`、SHA-256）。改ざん/並べ替え検知。監査障害は終了コード 3 で終了し、通常結果として偽装しません。 |
-| 決定論的決定ループ | 明示的ルール P0–P8：拒否/中断/失敗があればループ停止。ターゲットは**決して**拡大しません。 |
-| タスクグラフ | ステートマシン + ハード予算（最大 32 ノード、スポーン深度 2、8 スポーン）。動的スポーンは親の COMPLETED を前提条件。 |
-| オプションのツールアダプタ | `nuclei`（テンプレートスキャン）と `bandit`（静的解析）— 未インストール時は preflight レポート付きで SKIPPED。 |
-| 正直なレポート | 発見内容はそのまま記録。未検証の出力が確認済み脆弱性として標識されることはありません。既知の制限はレポートごとに列挙。 |
+Gen-1 は単一の決定論的パイプラインとして動作します — 以下の各機能はモデル判断ではなく、明示的なコードパスによって強制されます。
+
+### 認可ゲート
+
+機械可読な scope JSON を**独立サブプロセス**で検証。欠落/破損/期限切れ → REFUSED（終了コード 2）。バイパス経路は存在しません。アダプタはポリシーエンジン発行のチケットのみ受諾。スコープハッシュ・モード・ターゲット・ウィンドウを**実行時に再独立検証**します。
+
+### ポリシーエンジンとリスクラダー
+
+リスク上限が昇順の 5 モード（R0–R4、[基本的な使い方](#6-基本的な使い方)参照）。明示的ルール P0–P8：拒否/中断/失敗があればループ停止。ターゲットは**決して**拡大しません。
+
+### TaskGraph オーケストレーション
+
+ハード予算つきステートマシン（最大 32 ノード、スポーン深度 2、8 スポーン）。動的スポーンは親の COMPLETED を前提条件とします。
+
+### ツールアダプタ (nuclei / bandit)
+
+`nuclei`（テンプレートスキャン）と `bandit`（静的解析）— 未インストール時は preflight レポート付きで SKIPPED。安全な実行：ステップごとに 12 項目のチェックチェーン。破壊的技術なし、永続化なし、ペイロード構築なし、発見データの外部送信なし。
+
+### 監査ジャーナル
+
+追加専用ハッシュチェーン（`seq`/`prev`/`h`、SHA-256）。改ざん/並べ替え検知。監査障害は終了コード 3 で終了し、通常結果として偽装しません。
+
+### 構造化レポート
+
+発見内容はそのまま記録。未検証の出力が確認済み脆弱性として標識されることはありません。既知の制限はレポートごとに列挙されます。
 
 ## 3. ユースケース
 

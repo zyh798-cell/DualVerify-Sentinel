@@ -1,24 +1,35 @@
 <div align="center">
 
-# DualVerify-Sentinel
+<img src="../../assets/logo.svg" alt="DualVerify-Sentinel 标志 — 验证六边形：双勾、网络节点与扫描带" width="110">
 
-**确定性、授权门禁的安全验证引擎。**
+# DUALVERIFY-SENTINEL
 
-`zyh798-cell` / `DualVerify-Sentinel` · Gen-1 稳定版 · MIT
+### ENGINEERED FOR TRUST.
+### BUILT FOR CONTROL.
 
-<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — 像素风格动态横幅，标题逐字显现并伴随扫描线扫过与数据流动效" width="720">
+**策略驱动的安全验证引擎**
 
-**DualVerify-Sentinel — 确定性安全验证引擎**
-⚠️ **仅限已授权的安全测试**
+确定性执行。显式授权边界。可审计的安全证据。
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
+`zyh798-cell` / `DualVerify-Sentinel` · MIT
+
+<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — 动态横幅：像素标题显现、扫描线扫过与数据流动效" width="720">
+
+<img src="../../assets/honor-badge.svg" alt="GEN-1 STABLE 项目里程碑 — 自我报告，非第三方奖项" width="500">
+<sub>GEN-1 STABLE · PROJECT MILESTONE · SELF-REPORTED · NOT A THIRD-PARTY AWARD</sub>
+
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-0078D6?logo=windows&logoColor=white)](#4-环境要求)
-[![Platform](https://img.shields.io/badge/Platform-Linux%2FmacOS%20Unverified-6b7280)](#10-已知限制)
-[![Checks](https://img.shields.io/badge/Offline%20Checks-427%2B%20Passing-2EA043)](#11-项目状态)
-[![Status](https://img.shields.io/badge/Status-Gen--1%20Stable-8250DF)](#11-项目状态)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-环境要求)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#4-环境要求)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#8-授权与安全)
+[![Checks](https://img.shields.io/badge/Local%20Checks-427%2B%20Passing%20(local%20record)-2EA043)](#11-项目状态)
 
 [English](../../README.md) · **中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md)
+
+[授权门禁](#授权门禁) · [策略引擎](#策略引擎与风险阶梯) · [TaskGraph](#taskgraph-编排) · [工具适配器](#工具适配器-nuclei--bandit) · [审计日志](#审计日志) · [报告](#结构化报告) · [安装](#5-安装) · [安全](../../SECURITY.md)
+
+> ⚠️ **仅限已授权的安全测试**
 
 </div>
 
@@ -36,16 +47,31 @@ Gen-1 的规划/决策层有意保持确定性。
 
 ## 2. 功能一览
 
-| 能力 | 实现方式 |
-|---|---|
-| 授权门禁 | 机器可读的 scope JSON 在**独立子进程**中校验；缺失/损坏/过期 → REFUSED（退出码 2）。不存在绕过路径。 |
-| 执行票据（RunTicket） | 适配器只接受策略引擎签发的票据；范围哈希、模式、目标、窗口在**执行时再次独立核验**。 |
-| 安全执行 | 每步 12 项检查链；无破坏性技术、无持久化、不构建 payload、不外传发现的数据。 |
-| 审计日志 | 只追加哈希链（`seq`/`prev`/`h`，SHA-256）；篡改/重排可检测；审计故障以退出码 3 终止，绝不伪装为普通结果。 |
-| 确定性决策循环 | 显式规则 P0–P8：任何拒绝/中止/失败即停止循环；**绝不**扩大目标范围。 |
-| 任务图 | 状态机 + 硬预算（最多 32 节点、派生深度 2、8 次派生）；动态派生以父节点 COMPLETED 为前提。 |
-| 可选工具适配器 | `nuclei`（模板扫描）与 `bandit`（静态分析）——未安装时优雅 SKIPPED 并给出 preflight 报告。 |
-| 诚实报告 | 发现按原样记录；未验证的输出绝不会被标记为已确认漏洞；每份报告都列出已知限制。 |
+Gen-1 作为单一确定性流水线运行——以下每项能力都由显式代码路径强制执行，而非模型判断。
+
+### 授权门禁
+
+机器可读的 scope JSON 在**独立子进程**中校验；缺失/损坏/过期 → REFUSED（退出码 2）。不存在绕过路径。适配器只接受策略引擎签发的票据；范围哈希、模式、目标与窗口在**执行时再次独立核验**。
+
+### 策略引擎与风险阶梯
+
+五种模式、风险上限递增（R0–R4，见[基本用法](#6-基本用法)）。显式规则 P0–P8：任何拒绝/中止/失败即停止循环；**绝不**扩大目标范围。
+
+### TaskGraph 编排
+
+状态机 + 硬预算（最多 32 节点、派生深度 2、8 次派生）；动态派生以父节点 COMPLETED 为前提。
+
+### 工具适配器 (nuclei / bandit)
+
+`nuclei`（模板扫描）与 `bandit`（静态分析）——未安装时优雅 SKIPPED 并给出 preflight 报告。安全执行：每步 12 项检查链；无破坏性技术、无持久化、不构建 payload、不外传发现的数据。
+
+### 审计日志
+
+只追加哈希链（`seq`/`prev`/`h`，SHA-256）；篡改/重排可检测；审计故障以退出码 3 终止，绝不伪装为普通结果。
+
+### 结构化报告
+
+发现按原样记录；未验证的输出绝不会被标记为已确认漏洞；每份报告都列出已知限制。
 
 ## 3. 使用场景
 

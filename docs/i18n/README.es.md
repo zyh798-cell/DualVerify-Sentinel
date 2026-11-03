@@ -1,24 +1,35 @@
 <div align="center">
 
-# DualVerify-Sentinel
+<img src="../../assets/logo.svg" alt="Logotipo de DualVerify-Sentinel — hexágono de verificación con doble marca de verificación, nodos de red y banda de escaneo" width="110">
 
-**Motor de validación de seguridad determinista con control de autorización.**
+# DUALVERIFY-SENTINEL
 
-`zyh798-cell` / `DualVerify-Sentinel` · Gen-1 Estable · MIT
+### ENGINEERED FOR TRUST.
+### BUILT FOR CONTROL.
 
-<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — banner animado estilo píxel donde el título aparece letra a letra con una línea de barrido y flujos de datos" width="720">
+**Motor de validación de seguridad dirigido por políticas**
 
-**DualVerify-Sentinel — Deterministic Security Validation Engine**
-⚠️ **SOLO PRUEBAS DE SEGURIDAD AUTORIZADAS**
+Ejecución determinista. Límites de autorización explícitos. Evidencia de seguridad auditable.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
+`zyh798-cell` / `DualVerify-Sentinel` · MIT
+
+<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — banner animado: revelación del título en píxeles, línea de barrido y flujos de datos" width="720">
+
+<img src="../../assets/honor-badge.svg" alt="GEN-1 STABLE HITO DEL PROYECTO — autorreportado, no es un premio de terceros" width="500">
+<sub>GEN-1 STABLE · PROJECT MILESTONE · SELF-REPORTED · NOT A THIRD-PARTY AWARD</sub>
+
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-0078D6?logo=windows&logoColor=white)](#4-requisitos)
-[![Platform](https://img.shields.io/badge/Platform-Linux%2FmacOS%20Unverified-6b7280)](#10-limitaciones-conocidas)
-[![Checks](https://img.shields.io/badge/Offline%20Checks-427%2B%20Passing-2EA043)](#11-estado-del-proyecto)
-[![Status](https://img.shields.io/badge/Status-Gen--1%20Stable-8250DF)](#11-estado-del-proyecto)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-requisitos)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#4-requisitos)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#8-autorización-y-seguridad)
+[![Checks](https://img.shields.io/badge/Local%20Checks-427%2B%20Passing%20(local%20record)-2EA043)](#11-estado-del-proyecto)
 
 [English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · **Español** · [Français](README.fr.md)
+
+[Autorización](#puerta-de-autorización) · [Motor de políticas](#motor-de-políticas-y-escala-de-riesgo) · [TaskGraph](#orquestación-taskgraph) · [Adaptadores](#adaptadores-de-herramientas-nuclei--bandit) · [Auditoría](#diario-de-auditoría) · [Informes](#informes-estructurados) · [Instalación](#5-instalación) · [Seguridad](../../SECURITY.md)
+
+> ⚠️ **SOLO PRUEBAS DE SEGURIDAD AUTORIZADAS**
 
 </div>
 
@@ -40,16 +51,31 @@ determinista.
 
 ## 2. Qué puede hacer
 
-| Capacidad | Cómo funciona |
-|---|---|
-| Puerta de autorización | El JSON de alcance legible por máquina se valida en un **subproceso aislado**; ausente/corrupto/expirado → REFUSED (código de salida 2). No existe ruta de omisión. |
-| Tickets de ejecución | Los adaptadores solo aceptan tickets emitidos por el motor de políticas; hash de alcance, modo, objetivo y ventana se **reverifican de forma independiente en tiempo de ejecución**. |
-| Ejecución segura | Cadena de 12 comprobaciones por paso; sin técnicas destructivas, sin persistencia, sin construcción de payloads, sin exfiltración de datos descubiertos. |
-| Diario de auditoría | Cadena de hash de solo adición (`seq`/`prev`/`h`, SHA-256); detección de manipulación/reordenación; un fallo de auditoría termina con el código 3 en lugar de disfrazarse como resultado normal. |
-| Bucle de decisión determinista | Reglas explícitas P0–P8: cualquier rechazo/aborto/fallo detiene el bucle; los objetivos **nunca** se amplían. |
-| Grafo de tareas | Máquina de estados con presupuestos estrictos (máx. 32 nodos, profundidad de spawn 2, 8 spawns); los spawns dinámicos requieren un padre COMPLETED. |
-| Adaptadores de herramientas opcionales | `nuclei` (escaneo de plantillas) y `bandit` (análisis estático) — se omiten (SKIPPED) elegantemente con informe de preflight si no están instalados. |
-| Informes honestos | Los hallazgos se registran tal cual; la salida no verificada nunca se etiqueta como vulnerabilidad confirmada; las limitaciones conocidas se listan en cada informe. |
+Gen-1 se ejecuta como un único flujo determinista — cada capacidad siguiente se aplica mediante rutas de código explícitas, no por juicio de un modelo.
+
+### Puerta de autorización
+
+El JSON de alcance legible por máquina se valida en un **subproceso aislado**; ausente/corrupto/expirado → REFUSED (código de salida 2). No existe ruta de omisión. Los adaptadores solo aceptan tickets emitidos por el motor de políticas; el hash de alcance, el modo, el objetivo y la ventana se **reverifican de forma independiente en tiempo de ejecución**.
+
+### Motor de políticas y escala de riesgo
+
+Cinco modos con techo de riesgo creciente (R0–R4, véase [Uso básico](#6-uso-básico)). Reglas explícitas P0–P8: cualquier rechazo/aborto/fallo detiene el bucle; los objetivos **nunca** se amplían.
+
+### Orquestación TaskGraph
+
+Máquina de estados con presupuestos estrictos (máx. 32 nodos, profundidad de spawn 2, 8 spawns); los spawns dinámicos requieren un padre COMPLETED.
+
+### Adaptadores de herramientas (nuclei / bandit)
+
+`nuclei` (escaneo de plantillas) y `bandit` (análisis estático) — se omiten (SKIPPED) elegantemente con informe de preflight si no están instalados. Ejecución segura: cadena de 12 comprobaciones por paso; sin técnicas destructivas, sin persistencia, sin construcción de payloads, sin exfiltración de datos descubiertos.
+
+### Diario de auditoría
+
+Cadena de hash de solo adición (`seq`/`prev`/`h`, SHA-256); detección de manipulación/reordenación; un fallo de auditoría termina con el código 3 en lugar de disfrazarse como resultado normal.
+
+### Informes estructurados
+
+Los hallazgos se registran tal cual; la salida no verificada nunca se etiqueta como vulnerabilidad confirmada; las limitaciones conocidas se listan en cada informe.
 
 ## 3. Casos de uso
 

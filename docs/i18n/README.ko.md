@@ -1,24 +1,35 @@
 <div align="center">
 
-# DualVerify-Sentinel
+<img src="../../assets/logo.svg" alt="DualVerify-Sentinel 로고 — 듀얼 체크, 네트워크 노드, 스캔 대역이 있는 검증 헥사곤" width="110">
 
-**결정론적·인가 게이트 기반 보안 검증 엔진.**
+# DUALVERIFY-SENTINEL
 
-`zyh798-cell` / `DualVerify-Sentinel` · Gen-1 Stable · MIT
+### ENGINEERED FOR TRUST.
+### BUILT FOR CONTROL.
 
-<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — 픽셀 스타일 애니메이션 배너. 타이틀이 한 글자씩 나타나고 스캔라인과 데이터 플로우 효과가 흐릅니다" width="720">
+**정책 기반 보안 검증 엔진**
 
-**DualVerify-Sentinel — Deterministic Security Validation Engine**
-⚠️ **AUTHORIZED SECURITY TESTING ONLY**
+결정론적 실행. 명시적인 인가 경계. 감사 가능한 보안 증거.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
+`zyh798-cell` / `DualVerify-Sentinel` · MIT
+
+<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — 애니메이션 배너: 픽셀 타이틀 등장, 스캔라인, 데이터 플로우" width="720">
+
+<img src="../../assets/honor-badge.svg" alt="GEN-1 STABLE 프로젝트 마일스톤 — 자체 보고이며 서드파티 수상이 아닙니다" width="500">
+<sub>GEN-1 STABLE · PROJECT MILESTONE · SELF-REPORTED · NOT A THIRD-PARTY AWARD</sub>
+
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-0078D6?logo=windows&logoColor=white)](#4-요구-사항)
-[![Platform](https://img.shields.io/badge/Platform-Linux%2FmacOS%20Unverified-6b7280)](#10-알려진-제한-사항)
-[![Checks](https://img.shields.io/badge/Offline%20Checks-427%2B%20Passing-2EA043)](#11-프로젝트-현황)
-[![Status](https://img.shields.io/badge/Status-Gen--1%20Stable-8250DF)](#11-프로젝트-현황)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-요구-사항)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#4-요구-사항)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#8-인가와-안전)
+[![Checks](https://img.shields.io/badge/Local%20Checks-427%2B%20Passing%20(local%20record)-2EA043)](#11-프로젝트-현황)
 
 [English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · **한국어** · [Español](README.es.md) · [Français](README.fr.md)
+
+[인가 게이트](#인가-게이트) · [정책 엔진](#정책-엔진과-위험-등급-체계) · [TaskGraph](#taskgraph-오케스트레이션) · [도구 어댑터](#도구-어댑터-nuclei--bandit) · [감사 저널](#감사-저널) · [보고](#구조화된-보고) · [설치](#5-설치) · [보안](../../SECURITY.md)
+
+> ⚠️ **AUTHORIZED SECURITY TESTING ONLY**
 
 </div>
 
@@ -38,16 +49,31 @@ Gen-1은 결정론적·정책 기반 보안 검증 엔진이며, **자율 LLM �
 
 ## 2. 무엇을 할 수 있나?
 
-| 기능 | 동작 방식 |
-|---|---|
-| 인가 게이트 | 기계 판독 가능한 scope JSON을 **격리된 서브프로세스**에서 검증. 누락/손상/만료 → REFUSED (종료 코드 2). 우회 경로는 존재하지 않습니다. |
-| 실행 티켓 (RunTicket) | 어댑터는 정책 엔진이 발급한 티켓만 수용. 스코프 해시·모드·대상·윈도우를 **실행 시점에 재차 독립 검증**. |
-| 안전한 실행 | 단계별 12항목 검사 체인. 파괴적 기법 없음, 지속화(persistence) 없음, 페이로드 제작 없음, 발견된 데이터의 외부 전송 없음. |
-| 감사 저널 | 추가 전용 해시 체인 (`seq`/`prev`/`h`, SHA-256). 변조/재정렬 탐지. 감사 장애는 종료 코드 3으로 종료되며 정상 결과로 위장하지 않습니다. |
-| 결정론적 의사결정 루프 | 명시적 규칙 P0–P8: 거부/중단/실패가 하나라도 있으면 루프를 중지. 대상은 **절대** 확장되지 않습니다. |
-| 태스크 그래프 | 하드 예산이 적용된 상태 머신 (최대 32노드, 스폰 깊이 2, 스폰 8회). 동적 스폰은 부모 COMPLETED를 전제로 합니다. |
-| 선택적 도구 어댑터 | `nuclei` (템플릿 스캔)와 `bandit` (정적 분석) — 미설치 시 preflight 리포트와 함께 정상적으로 SKIPPED. |
-| 정직한 리포팅 | 발견 사항은 그대로 기록. 검증되지 않은 출력은 확인된 취약점으로 표시되지 않음. 알려진 제한 사항은 모든 리포트에 나열. |
+Gen-1은 단일 결정론적 파이프라인으로 동작합니다 — 아래의 모든 기능은 모델 판단이 아닌 명시적인 코드 경로로 강제됩니다.
+
+### 인가 게이트
+
+기계 판독 가능한 scope JSON을 **격리된 서브프로세스**에서 검증. 누락/손상/만료 → REFUSED (종료 코드 2). 우회 경로는 존재하지 않습니다. 어댑터는 정책 엔진이 발급한 티켓만 수용하며, 스코프 해시·모드·대상·윈도우를 **실행 시점에 재차 독립 검증**합니다.
+
+### 정책 엔진과 위험 등급 체계
+
+위험 상한이 증가하는 5가지 모드 (R0–R4, [기본 사용법](#6-기본-사용법) 참조). 명시적 규칙 P0–P8: 거부/중단/실패가 하나라도 있으면 루프를 중지. 대상은 **절대** 확장되지 않습니다.
+
+### TaskGraph 오케스트레이션
+
+하드 예산이 적용된 상태 머신 (최대 32노드, 스폰 깊이 2, 스폰 8회). 동적 스폰은 부모 COMPLETED를 전제로 합니다.
+
+### 도구 어댑터 (nuclei / bandit)
+
+`nuclei` (템플릿 스캔)와 `bandit` (정적 분석) — 미설치 시 preflight 리포트와 함께 정상적으로 SKIPPED. 안전한 실행: 단계별 12항목 검사 체인. 파괴적 기법 없음, 지속화 없음, 페이로드 제작 없음, 발견된 데이터의 외부 전송 없음.
+
+### 감사 저널
+
+추가 전용 해시 체인 (`seq`/`prev`/`h`, SHA-256). 변조/재정렬 탐지. 감사 장애는 종료 코드 3으로 종료되며 정상 결과로 위장하지 않습니다.
+
+### 구조화된 보고
+
+발견 사항은 그대로 기록. 검증되지 않은 출력은 확인된 취약점으로 표시되지 않습니다. 알려진 제한 사항은 모든 리포트에 나열됩니다.
 
 ## 3. 사용 사례
 

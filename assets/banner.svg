@@ -1,41 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 320" width="100%" role="img">
   <title>DualVerify-Sentinel — Deterministic Security Validation Engine</title>
-  <desc>Dark navy banner with pixel-style orange-gold title DUALVERIFY SENTINEL, tech grid, and an authorized-security-testing-only notice.</desc>
+  <desc>Dark navy banner with pixel-style neon-green title DUALVERIFY SENTINEL, blue tech grid and frame, data-flow nodes, and an authorized-security-testing-only notice.</desc>
   <defs>
-    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffd34d"/>
-      <stop offset="0.55" stop-color="#ffab1a"/>
-      <stop offset="1" stop-color="#ff7a00"/>
+    <linearGradient id="dvs-green" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7dffb8"/>
+      <stop offset="0.55" stop-color="#39ff8e"/>
+      <stop offset="1" stop-color="#0f9d58"/>
     </linearGradient>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="dvs-bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#0a1322"/>
       <stop offset="1" stop-color="#0d1a2e"/>
     </linearGradient>
-    <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse">
+    <pattern id="dvs-grid" width="25" height="25" patternUnits="userSpaceOnUse">
       <path d="M25 0H0V25" fill="none" stroke="#16304f" stroke-width="1"/>
     </pattern>
   </defs>
-  <rect width="1000" height="320" fill="url(#bg)"/>
-  <rect width="1000" height="320" fill="url(#grid)" opacity="0.55"/>
+  <rect width="1000" height="320" fill="url(#dvs-bg)"/>
+  <rect width="1000" height="320" fill="url(#dvs-grid)" opacity="0.55"/>
   <rect x="8" y="8" width="984" height="304" fill="none" stroke="#1e88c7" stroke-width="1.5" opacity="0.8"/>
   <rect x="14" y="14" width="972" height="292" fill="none" stroke="#123a5c" stroke-width="0.75"/>
+  <rect x="15" y="118" width="970" height="24" fill="#123a5c" opacity="0.45"/>
+  <line x1="15" y1="118" x2="985" y2="118" stroke="#4da3ff" stroke-width="1" opacity="0.7"/>
+  <line x1="15" y1="142" x2="985" y2="142" stroke="#4da3ff" stroke-width="1" opacity="0.7"/>
   <g font-family="Consolas, 'Courier New', monospace" font-weight="bold" text-anchor="middle" letter-spacing="6">
-    <text x="506" y="112" font-size="64" fill="#3a1c02">DUALVERIFY</text>
-    <text x="502" y="108" font-size="64" fill="#7a3d05">DUALVERIFY</text>
-    <text x="498" y="104" font-size="64" fill="url(#gold)">DUALVERIFY</text>
-    <text x="506" y="182" font-size="64" fill="#3a1c02">SENTINEL</text>
-    <text x="502" y="178" font-size="64" fill="#7a3d05">SENTINEL</text>
-    <text x="498" y="174" font-size="64" fill="url(#gold)">SENTINEL</text>
+    <text x="506" y="112" font-size="64" fill="#032b16">DUALVERIFY</text>
+    <text x="502" y="108" font-size="64" fill="#0a5c33">DUALVERIFY</text>
+    <text x="498" y="104" font-size="64" fill="url(#dvs-green)">DUALVERIFY</text>
+    <text x="506" y="182" font-size="64" fill="#032b16">SENTINEL</text>
+    <text x="502" y="178" font-size="64" fill="#0a5c33">SENTINEL</text>
+    <text x="498" y="174" font-size="64" fill="url(#dvs-green)">SENTINEL</text>
   </g>
-  <g fill="#8fd8ff">
-    <rect x="330" y="196" width="7" height="7"/>
-    <rect x="352" y="196" width="7" height="7"/>
-    <rect x="641" y="196" width="7" height="7"/>
-    <rect x="663" y="196" width="7" height="7"/>
+  <g fill="#4da3ff">
+    <rect x="60" y="60" width="10" height="10"/>
+    <rect x="930" y="60" width="10" height="10"/>
+    <rect x="60" y="250" width="10" height="10"/>
+    <rect x="930" y="250" width="10" height="10"/>
+    <rect x="120" y="210" width="8" height="8" opacity="0.8"/>
+    <rect x="872" y="98" width="8" height="8" opacity="0.8"/>
   </g>
-  <text x="500" y="238" font-family="Consolas, 'Courier New', monospace" font-size="21" fill="#bfe3ff" text-anchor="middle" letter-spacing="2">Deterministic Security Validation Engine</text>
-  <rect x="308" y="258" width="384" height="30" fill="#132a44" stroke="#2a5a86" stroke-width="1"/>
-  <text x="500" y="278" font-family="Consolas, 'Courier New', monospace" font-size="15" fill="#ffb84d" text-anchor="middle" letter-spacing="2">AUTHORIZED SECURITY TESTING ONLY</text>
+  <text x="500" y="232" text-anchor="middle" font-family="Consolas, 'Courier New', monospace" font-size="20" fill="#bfe3ff" letter-spacing="3">POLICY-DRIVEN SECURITY VALIDATION ENGINE</text>
+  <rect x="240" y="252" width="520" height="30" rx="4" fill="#1a1206" stroke="#633806" stroke-width="1"/>
+  <text x="500" y="273" text-anchor="middle" font-family="Consolas, 'Courier New', monospace" font-weight="bold" font-size="16" fill="#ffab1a">⚠ AUTHORIZED SECURITY TESTING ONLY</text>
   <text x="20" y="306" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#3d6a94">zyh798-cell/DualVerify-Sentinel</text>
   <text x="980" y="306" font-family="Consolas, 'Courier New', monospace" font-size="11" fill="#3d6a94" text-anchor="end">MIT</text>
 </svg>
