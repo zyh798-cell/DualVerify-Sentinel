@@ -15,9 +15,6 @@ Deterministic execution. Explicit authorization boundaries. Auditable security e
 
 <img src="assets/banner.gif" alt="DualVerify-Sentinel — animated banner: pixel title reveal, scanline sweep and data-flow accents" width="720">
 
-<img src="assets/honor-badge.svg" alt="GEN-1 STABLE PROJECT MILESTONE — self-reported, not a third-party award" width="500">
-<sub>GEN-1 STABLE · PROJECT MILESTONE · SELF-REPORTED · NOT A THIRD-PARTY AWARD</sub>
-
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-requirements)

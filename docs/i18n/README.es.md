@@ -15,9 +15,6 @@ Ejecución determinista. Límites de autorización explícitos. Evidencia de seg
 
 <img src="../../assets/banner.gif" alt="DualVerify-Sentinel — banner animado: revelación del título en píxeles, línea de barrido y flujos de datos" width="720">
 
-<img src="../../assets/honor-badge.svg" alt="GEN-1 STABLE HITO DEL PROYECTO — autorreportado, no es un premio de terceros" width="500">
-<sub>GEN-1 STABLE · PROJECT MILESTONE · SELF-REPORTED · NOT A THIRD-PARTY AWARD</sub>
-
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-requisitos)
