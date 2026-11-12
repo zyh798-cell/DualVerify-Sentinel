@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="../../assets/logo.svg" alt="DualVerify-Sentinel 标志 — 验证六边形：双勾、网络节点与扫描带" width="110">
+<img src="../../assets/logo.svg" alt="DualVerify-Sentinel 标志 — 深蓝盾牌：双勾、青色轨道节点与 DVS 字标" width="110">
 
 # DUALVERIFY-SENTINEL
 
@@ -13,7 +13,7 @@
 
 `zyh798-cell` / `DualVerify-Sentinel` · MIT
 
-<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — 动态横幅：像素标题显现、扫描线扫过与数据流动效" width="720">
+<img src="../../assets/banner.svg" alt="DualVerify-Sentinel 横幅 — 盾牌标志、项目名称、一句话说明与仅限授权测试声明" width="720">
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)

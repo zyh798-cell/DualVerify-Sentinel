@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="../../assets/logo.svg" alt="DualVerify-Sentinel 로고 — 듀얼 체크, 네트워크 노드, 스캔 대역이 있는 검증 헥사곤" width="110">
+<img src="../../assets/logo.svg" alt="DualVerify-Sentinel 로고 — 듀얼 체크, 시안 관도 노드, DVS 워드마크가 있는 딥네이비 방패" width="110">
 
 # DUALVERIFY-SENTINEL
 
@@ -13,7 +13,7 @@
 
 `zyh798-cell` / `DualVerify-Sentinel` · MIT
 
-<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — 애니메이션 배너: 픽셀 타이틀 등장, 스캔라인, 데이터 플로우" width="720">
+<img src="../../assets/banner.svg" alt="DualVerify-Sentinel 배너 — 방패 마크, 프로젝트 이름, 한 줄 설명, 승인된 테스트 전용 안내" width="720">
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)

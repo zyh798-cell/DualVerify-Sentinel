@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="../../assets/logo.svg" alt="DualVerify-Sentinel ロゴ — デュアルチェック、ネットワークノード、スキャン帯つきの検証ヘキサゴン" width="110">
+<img src="../../assets/logo.svg" alt="DualVerify-Sentinel ロゴ — デュアルチェック、シアンの軌道ノード、DVS ワードマークを備えた深納のシールド" width="110">
 
 # DUALVERIFY-SENTINEL
 
@@ -13,7 +13,7 @@
 
 `zyh798-cell` / `DualVerify-Sentinel` · MIT
 
-<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — アニメーションバナー：ピクセルタイトル出現、スキャンライン、データフロー" width="720">
+<img src="../../assets/banner.svg" alt="DualVerify-Sentinel バナー — シールドマーク、プロジェクト名、一行説明、authorized testing only の注意書き" width="720">
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)

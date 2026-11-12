@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="../../assets/logo.svg" alt="Logo DualVerify-Sentinel — hexagone de vérification avec double coche, nœuds réseau et bande de balayage" width="110">
+<img src="../../assets/logo.svg" alt="Logo DualVerify-Sentinel — bouclier bleu marine avec double coche, nœuds d’orbite cyan et le logotype DVS" width="110">
 
 # DUALVERIFY-SENTINEL
 
@@ -13,7 +13,7 @@ Exécution déterministe. Limites d'autorisation explicites. Preuves de sécurit
 
 `zyh798-cell` / `DualVerify-Sentinel` · MIT
 
-<img src="../../assets/banner.gif" alt="DualVerify-Sentinel — bannière animée : révélation du titre en pixels, ligne de balayage et flux de données" width="720">
+<img src="../../assets/banner.svg" alt="Bannière DualVerify-Sentinel — marque de bouclier, nom du projet, description en une ligne et mention tests autorisés uniquement" width="720">
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)

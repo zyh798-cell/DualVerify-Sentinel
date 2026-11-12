@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.svg" alt="DualVerify-Sentinel logo — verification hexagon with dual check strokes, network nodes and scan band" width="110">
+<img src="assets/logo.svg" alt="DualVerify-Sentinel logo — deep navy shield with dual verification check, cyan orbit nodes and the DVS wordmark" width="110">
 
 # DUALVERIFY-SENTINEL
 
@@ -13,7 +13,7 @@ Deterministic execution. Explicit authorization boundaries. Auditable security e
 
 `zyh798-cell` / `DualVerify-Sentinel` · MIT
 
-<img src="assets/banner.gif" alt="DualVerify-Sentinel — animated banner: pixel title reveal, scanline sweep and data-flow accents" width="720">
+<img src="assets/banner.svg" alt="DualVerify-Sentinel banner — shield mark, project name, one-line description and authorized-testing-only notice" width="720">
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
