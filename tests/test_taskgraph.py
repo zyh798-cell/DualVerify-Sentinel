@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from vuln_hunter.adapters_ext.gitleaks import gitleaks_binary  # noqa: E402
 from vuln_hunter.planner import build_plan  # noqa: E402
 from vuln_hunter.taskgraph import (  # noqa: E402
     GraphBuilder, TaskGraph, TaskGraphError, TaskNode,
@@ -241,10 +242,13 @@ check("TG-20", g19.nodes["s1"].state == "READY"
       "deep-copied snapshot: external mutation cannot touch graph")
 
 # ---- TG-21/22 from_plan: count + field equality (3 plan shapes) ---------------
+# EXT-1.1: the third shape gains "s4-gitleaks" only when the gitleaks binary
+# resolves (optional tool, machine-independent expectation).
 for mode, source_dir, expect_ids in [
     ("safe_scan", None, ["s1-probe"]),
     ("vuln_validation", None, ["s1-probe", "s2-nuclei"]),
-    ("vuln_validation", "src", ["s1-probe", "s2-nuclei", "s3-bandit"]),
+    ("vuln_validation", "src", ["s1-probe", "s2-nuclei", "s3-bandit"]
+     + (["s4-gitleaks"] if gitleaks_binary() is not None else [])),
 ]:
     plan = build_plan(mode, "127.0.0.1:8080", source_dir=source_dir)
     gph = GraphBuilder.from_plan(plan)

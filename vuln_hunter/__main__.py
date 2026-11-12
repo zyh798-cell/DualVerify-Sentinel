@@ -5,6 +5,9 @@ Exit codes: 0 = all steps completed; 1 = run finished with failures/refusals;
 3 = AUDIT FAILURE (journal could not be written/verified — including
 verification failure at run_end; run result NOT certified — never disguised
 as a normal outcome).
+
+Extension adapters are registered EXPLICITLY by main() (EXT-1.2), never at
+import time: importing any module has no registration side effects.
 """
 import argparse
 import json
@@ -42,13 +45,25 @@ def _safe_scope(path_str: str) -> dict:
 
 
 def main(argv=None) -> int:
+    # EXT-1.2: the ONE explicit registration point for extension adapters.
+    # Importing any module (including this CLI module) must NOT register
+    # adapters; only an actual CLI start-up does. register_gitleaks() and
+    # register_semgrep() are idempotent, so repeated main() calls in one
+    # process are safe.
+    # Registration grants no execution rights: every adapter still needs a
+    # RunTicket issued by a live PolicyEngine at execute() time.
+    from .adapters_ext import register_gitleaks, register_semgrep
+    register_gitleaks()
+    register_semgrep()
+
     ap = argparse.ArgumentParser(prog="vuln_hunter")
     sub = ap.add_subparsers(dest="cmd", required=True)
     run = sub.add_parser("run", help="execute a plan against an authorized target")
     run.add_argument("--scope", required=True, help="scope JSON file")
     run.add_argument("--mode", required=True, choices=sorted(MODES))
     run.add_argument("--target", required=True, help="host[:port] or URL")
-    run.add_argument("--source-dir", help="optional source tree for bandit")
+    run.add_argument("--source-dir", help="optional source tree for bandit, "
+                    "gitleaks and semgrep (local read-only scans)")
     run.add_argument("--evidence-dir", default=None)
     run.add_argument("--timeout", type=int, default=120, help="dynamic-step timeout")
     run.add_argument("--loop", action="store_true",
@@ -72,6 +87,10 @@ def main(argv=None) -> int:
     run.add_argument("--nuclei-timeout", type=int, default=240,
                      help="independent per-attempt budget for the nuclei step "
                           "(default 240s: measured catalog-load ~3-3.5min)")
+    run.add_argument("--semgrep-rules", default="",
+                     help="LOCAL semgrep rules file or directory (required for "
+                          "the s5-semgrep step; the registry/auto config is "
+                          "never used — no rule download, no network)")
     gc = sub.add_parser("gate-check",
                         help="validate a scope file via the in-package gate "
                              "(no execution; exit 0=accept, 1=refuse)")
@@ -149,6 +168,7 @@ def main(argv=None) -> int:
                     nuclei_timeout=args.nuclei_timeout,
                     nuclei_ids=[s for s in args.nuclei_id.split(",") if s.strip()],
                     nuclei_tags=[s for s in args.nuclei_tags.split(",") if s.strip()],
+                    semgrep_rules=args.semgrep_rules or None,
                 )
                 executor = Executor(policy, journal, ev,
                                     synthetic_run=args.synthetic)

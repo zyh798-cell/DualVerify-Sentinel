@@ -220,8 +220,16 @@ with tempfile.TemporaryDirectory() as td:
     # ---- TE-15 planner shapes ---------------------------------------------
     plan_a = build_plan("safe_scan", "127.0.0.1:8080")
     plan_b = build_plan("vuln_validation", "127.0.0.1:8080", source_dir="src")
+    # EXT-1.1: the planner appends the gitleaks step only when the binary
+    # resolves (a missing optional tool must not turn green runs red), so
+    # the expectation is computed, not hard-coded — machine-independent.
+    from vuln_hunter.adapters_ext.gitleaks import gitleaks_binary
+    expect_b = ["http_probe", "nuclei", "bandit"]
+    if gitleaks_binary() is not None:
+        expect_b.append("gitleaks")
     check("TE-15a", [s["adapter"] for s in plan_a] == ["http_probe"], "safe_scan: probe only")
-    check("TE-15b", [s["adapter"] for s in plan_b] == ["http_probe", "nuclei", "bandit"], "vuln_validation + source_dir: probe, nuclei, bandit")
+    check("TE-15b", [s["adapter"] for s in plan_b] == expect_b,
+          "vuln_validation + source_dir: probe, nuclei, bandit (+gitleaks when installed)")
     check("TE-15c", plan_b[1]["deps"] == ["s1-probe"], "nuclei depends on probe")
     check("TE-15d", MODES["high_risk"] == "R4", "mode table intact")
 

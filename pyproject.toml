@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dualverify-sentinel"
-version = "0.1.0"
+version = "0.2.0rc1"
 description = "Authorization-gated local security checks for lab targets and explicitly authorized hosts"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -16,4 +16,6 @@ dependencies = []  # standard library only; nuclei/bandit are optional external 
 dvs = "vuln_hunter.__main__:main"
 
 [tool.setuptools]
-packages = ["vuln_hunter"]
+# adapters_ext is a first-class subpackage (EXT-1): the gitleaks adapter must
+# ship in the wheel/sdist, not just be importable from a source checkout.
+packages = ["vuln_hunter", "vuln_hunter.adapters_ext"]
