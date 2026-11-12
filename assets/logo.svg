@@ -1,23 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320" role="img">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 648" width="640" height="648" role="img">
   <title>DualVerify-Sentinel logo</title>
-  <desc>Verification hexagon: neon-green hexagonal boundary with blue network nodes at the vertices, dual neon-green and blue check strokes inside, and a horizontal blue scan band crossing the hexagon.</desc>
+  <desc>Fused DualVerify-Sentinel mark: a deep navy shield with volumetric shading, two interlocking teal and blue bands entering from the upper left, a dual verification check inside the shield, a cyan orbit with a node at each end, and the DVS wordmark below with two checks inside the counter of the D.</desc>
   <defs>
-    <clipPath id="dvs-hex-clip">
-      <polygon points="284,160 222,270 98,270 36,160 98,50 222,50"/>
-    </clipPath>
+    <linearGradient id="dvsShield" x1="0" y1="222" x2="0" y2="515" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#053478"/>
+      <stop offset="0.5" stop-color="#032A5B"/>
+      <stop offset="1" stop-color="#021A34"/>
+    </linearGradient>
+    <linearGradient id="dvsWordmark" x1="0" y1="592" x2="0" y2="792" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0C3361"/>
+      <stop offset="1" stop-color="#05244B"/>
+    </linearGradient>
+    <linearGradient id="dvsOrbitNode" x1="0" y1="180" x2="0" y2="532" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#23DDED"/>
+      <stop offset="1" stop-color="#21BAF7"/>
+    </linearGradient>
+    <clipPath id="dvsShieldClip"><path d="M374 295A158.6 158.6 0 0 1 641 295V350C641 432 575 486 507.5 514C440 486 374 432 374 350Z"/></clipPath>
   </defs>
-  <polygon points="284,160 222,270 98,270 36,160 98,50 222,50" fill="#0d1a2e" stroke="#39ff8e" stroke-width="10"/>
-  <g clip-path="url(#dvs-hex-clip)">
-    <rect x="30" y="140" width="260" height="40" fill="#123a5c"/>
-    <line x1="30" y1="140" x2="290" y2="140" stroke="#4da3ff" stroke-width="4"/>
-    <line x1="30" y1="180" x2="290" y2="180" stroke="#4da3ff" stroke-width="4"/>
+  <!-- All geometry below is expressed in the 1024x1024 coordinate space of the approved reference artwork.
+       This group maps the artwork's content box onto the 640x648 canvas. -->
+  <g transform="translate(-194 -158)">
+  <g id="dvs-mark">
+    <path d="M520.5 184.5A172.2 172.2 0 0 1 521.5 528.5" fill="none" stroke="#4DE1FD" stroke-width="16"/>
+    <circle cx="520.5" cy="184.5" r="10.5" fill="url(#dvsOrbitNode)"/>
+    <circle cx="521.5" cy="528.5" r="10.5" fill="url(#dvsOrbitNode)"/>
+    <path d="M374 295A158.6 158.6 0 0 1 641 295V350C641 432 575 486 507.5 514C440 486 374 432 374 350Z" fill="url(#dvsShield)"/>
+    <g clip-path="url(#dvsShieldClip)">
+      <rect x="507.5" y="200" width="160" height="330" fill="#1A72B4" opacity="0.1"/>
+    </g>
+    <path d="M362 200H419L570 349H513Z" fill="#02CCBF"/>
+    <path d="M339 256H401L512 367V430Z" fill="#099CF1"/>
+    <path d="M606 351L628 373L510 486L456 432L476 411L512 445Z" fill="#0BDED0"/>
   </g>
-  <circle cx="284" cy="160" r="11" fill="#4da3ff"/>
-  <circle cx="222" cy="270" r="11" fill="#4da3ff"/>
-  <circle cx="98" cy="270" r="11" fill="#4da3ff"/>
-  <circle cx="36" cy="160" r="11" fill="#4da3ff"/>
-  <circle cx="98" cy="50" r="11" fill="#4da3ff"/>
-  <circle cx="222" cy="50" r="11" fill="#4da3ff"/>
-  <path d="M88 132 L152 230 L188 174" fill="none" stroke="#39ff8e" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M170 112 L216 184" fill="none" stroke="#4da3ff" stroke-width="16" stroke-linecap="round"/>
+  <g id="dvs-wordmark">
+    <!-- r1 keyline: outer silhouettes only, painted UNDER the fill so only the
+         outward half of the stroke stays visible (counter and stroke weight intact). -->
+    <g fill="none" stroke="#9CD0EE" stroke-width="4"
+       stroke-linejoin="miter" stroke-miterlimit="2">
+      <path d="M210 594H329.5A90.5 90.5 0 0 1 329.5 775H210Z"/>
+      <path d="M408 594H459L526 715L537 699L532 685L584 594H635L581 690L548 692L561 716L516 790Z"/>
+      <path d="M728 594.5Q771 595 777 597Q783 599 788 602Q793 605 799 612Q805 619 807.5 624.5Q810 630 811 637L812 644L790.5 644L769 644L768 639Q767 634 764.5 631.5Q762 629 757.5 627.5Q753 626 724 626Q695 626 689 628Q683 630 680 633Q677 636 676 638.5Q675 641 676 647Q677 653 682 657Q687 661 690.5 662Q694 663 730.5 663.5Q767 664 773 665.5Q779 667 786.5 670.5Q794 674 800.5 679.5Q807 685 812.5 695.5Q818 706 818 718Q818 730 817 733.5Q816 737 811 745.5Q806 754 797.5 761Q789 768 778.5 771.5Q768 775 723.5 775Q679 775 673 773.5Q667 772 662 769.5Q657 767 650 760.5Q643 754 642.5 752L642 750L641 749.5Q640 749 637 741.5Q634 734 633.5 727.5L633 721L655 721L677 721L677 724.5Q677 728 678.5 731.5Q680 735 682.5 737Q685 739 689.5 740.5Q694 742 724.5 742Q755 742 761 739.5Q767 737 771 731.5Q775 726 775 721Q775 716 773.5 713Q772 710 766.5 706Q761 702 757.5 701Q754 700 720.5 700Q687 700 681 699Q675 698 666 694.5Q657 691 649 683.5Q641 676 637 666Q633 656 633 647.5Q633 639 635 632.5Q637 626 640.5 620.5Q644 615 649 610.5Q654 606 660 602.5Q666 599 675.5 596.5Q685 594 728 594.5Z"/>
+    </g>
+    <g fill="url(#dvsWordmark)">
+      <path d="M210 594H329.5A90.5 90.5 0 0 1 329.5 775H210Z M251 625H318.5A59.5 59.5 0 0 1 318.5 744H251Z" fill-rule="evenodd"/>
+      <path d="M408 594H459L526 715L537 699L532 685L584 594H635L581 690L548 692L561 716L516 790Z"/>
+      <path d="M728 594.5Q771 595 777 597Q783 599 788 602Q793 605 799 612Q805 619 807.5 624.5Q810 630 811 637L812 644L790.5 644L769 644L768 639Q767 634 764.5 631.5Q762 629 757.5 627.5Q753 626 724 626Q695 626 689 628Q683 630 680 633Q677 636 676 638.5Q675 641 676 647Q677 653 682 657Q687 661 690.5 662Q694 663 730.5 663.5Q767 664 773 665.5Q779 667 786.5 670.5Q794 674 800.5 679.5Q807 685 812.5 695.5Q818 706 818 718Q818 730 817 733.5Q816 737 811 745.5Q806 754 797.5 761Q789 768 778.5 771.5Q768 775 723.5 775Q679 775 673 773.5Q667 772 662 769.5Q657 767 650 760.5Q643 754 642.5 752L642 750L641 749.5Q640 749 637 741.5Q634 734 633.5 727.5L633 721L655 721L677 721L677 724.5Q677 728 678.5 731.5Q680 735 682.5 737Q685 739 689.5 740.5Q694 742 724.5 742Q755 742 761 739.5Q767 737 771 731.5Q775 726 775 721Q775 716 773.5 713Q772 710 766.5 706Q761 702 757.5 701Q754 700 720.5 700Q687 700 681 699Q675 698 666 694.5Q657 691 649 683.5Q641 676 637 666Q633 656 633 647.5Q633 639 635 632.5Q637 626 640.5 620.5Q644 615 649 610.5Q654 606 660 602.5Q666 599 675.5 596.5Q685 594 728 594.5Z"/>
+    </g>
+    <g fill="#08D9CC">
+      <path d="M330 643L341 652L296 699L267 672L278 661L296 677Z"/>
+      <path d="M352 688L363 699L327 734L301 710L311 700L327 714Z"/>
+    </g>
+  </g>
+  </g>
 </svg>
