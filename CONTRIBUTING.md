@@ -18,34 +18,28 @@ vuln_hunter/          Core package (import name: vuln_hunter; CLI: dvs)
   loop.py             AutonomousLoop scheduling, cascade, P9 opt-in spawning
   runner.py           12-step per-step check chain
   adapters.py         Tool adapters (probe / nuclei / bandit), timeout + tree cleanup
+  adapters_ext/       Optional adapters: gitleaks / semgrep (local rules only)
+  findings.py         Unified Finding Schema (severity + record validation)
   journal.py          Append-only SHA-256 hash-chain evidence journal
   report.py           Run report with honest limitations
 tests/                Plain-script test suites (no test framework required)
 scripts/              example-scope.json (fictional example scope)
 docs/i18n/            README translations (zh-CN, ja, ko, es, fr)
-assets/               banner.gif / banner.svg
+assets/               logo.svg / banner.gif / banner.svg
 ```
 
 ## Running the tests
 
-No test runner is required — each suite is a standalone script:
+No test runner is required — the test suites are standalone scripts located
+under `tests/`. Run the suite relevant to your change and rely on its actual
+output:
 
 ```bash
-python tests/test_engine.py
-python tests/test_decision.py
-python tests/test_check_scope.py
-python tests/test_adapters_gate.py
-python tests/test_gate_packaging.py
-python tests/test_journal_chain.py
-python tests/test_cli_gate.py
-python tests/test_s2_hardening.py
-python tests/test_taskgraph.py
-python tests/test_graph_loop.py
-python tests/test_p9.py
+python tests/<suite>.py
 ```
 
-Every suite exits `0` on success. Run them and trust the actual output — the
-repository does not assert "all green" without evidence. Some suites print a
+This repository does not assert "all green" without evidence and makes no
+pre-asserted passing-check-count claim. Some suites print a
 `PASS=n FAIL=n SKIP=n` summary; a `SKIP` is a designed skip (e.g. an optional
 external tool is not installed), never a hidden failure.
 

@@ -20,7 +20,7 @@ Exécution déterministe. Limites d'autorisation explicites. Preuves de sécurit
 [![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-prérequis)
 [![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#4-prérequis)
 [![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#8-autorisation-et-sécurité)
-[![Checks](https://img.shields.io/badge/Local%20Checks-427%2B%20Passing%20(local%20record)-2EA043)](#11-état-du-projet)
+[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#11-état-du-projet)
 
 [English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · **Français**
 
@@ -41,10 +41,9 @@ dans un journal d'audit à chaîne de hachage infalsifiable, et fonctionne en
 **fail-closed** — une autorisation absente, corrompue ou expirée signifie un
 *refus*, jamais une vérification ignorée.
 
-C'est la couche d'ingénierie de sécurité (porte d'autorisation + moteur
-d'exécution fiable) d'une architecture de vérification de nouvelle génération
-planifiée. La couche planification/décision de Gen-1 est volontairement
-déterministe.
+C'est une couche d'ingénierie de sécurité : une porte d'autorisation associée à
+un moteur d'exécution déterministe. La couche planification/décision de Gen-1 est
+volontairement déterministe, et non pilotée par modèle.
 
 ## 2. Ce qu'il sait faire
 
@@ -74,6 +73,22 @@ Chaîne de hachage en ajout seul (`seq`/`prev`/`h`, SHA-256) ; détection de fal
 
 Les constatations sont enregistrées telles quelles ; les sorties non vérifiées ne sont jamais étiquetées vulnérabilités confirmées ; les limitations connues sont listées dans chaque rapport.
 
+### Adaptateurs supplémentaires et schéma unifié des constatations
+
+Deux adaptateurs optionnels supplémentaires sont implémentés dans
+`vuln_hunter/adapters_ext/` : `gitleaks` (détection de secrets, étape
+`s4-gitleaks`) et `semgrep` (analyse statique, **fichiers de règles locaux
+uniquement**, étape `s5-semgrep`). Tous deux sont planifiés sous condition pour
+les arborescences de sources de portée « système de fichiers », nécessitent leurs
+propres binaires et ne récupèrent jamais de règles par le réseau. Toutes les
+sorties d'adaptateur sont normalisées via le schéma unifié des constatations
+(`findings.py`), qui valide la sévérité et la forme de l'enregistrement avant
+qu'une constatation n'atteigne un rapport.
+
+> Ces adaptateurs sont **implémentés en code**, mais la vérification de bout en
+> bout avec les outils réels **n'est pas terminée**. La présence d'un adaptateur
+> n'est pas la preuve d'une exécution vérifiée — voir section 11.
+
 ## 3. Cas d'usage
 
 - Valider vos propres cibles de laboratoire et les hôtes explicitement autorisés.
@@ -89,7 +104,7 @@ Les constatations sont enregistrées telles quelles ; les sorties non vérifiée
 | Python | >= 3.10 (testé uniquement sur 3.13.14) |
 | Dépendances tierces | **Aucune** — bibliothèque standard uniquement |
 | Système d'exploitation | Windows **Vérifié** ; Linux/macOS **Pas encore vérifié** |
-| Outils externes (optionnels) | `nuclei`, `bandit` — ignorés s'ils sont absents |
+| Outils externes (optionnels) | `nuclei`, `bandit`, `gitleaks`, `semgrep` — adaptateurs implémentés ; ignorés s'ils sont absents ; exécutions avec outils réels non encore vérifiées |
 
 ## 5. Installation
 
@@ -197,15 +212,22 @@ d'entrée pris en charge.
 
 ## 11. État du projet
 
-- **Gen-1 est stable** : 18 suites de tests hors ligne, plus de 427 vérifications
-  réussies en local (Windows, Python 3.13.14). Packaging testé par des
-  constructions wheel/sdist.
-- Une **architecture Gen-2** (un dépôt futur et séparé) est planifiée avec
-  une séparation proposition/adjudication. Le travail Gen-2 n'aura pas lieu dans
-  ce dépôt.
-- Les commandes de test complètes figurent dans les suites sous `tests/` —
-  exécutez-les et fiez-vous aux résultats réels ; ce dépôt ne formule aucune
-  affirmation anticipée de « tout au vert ».
+- **Gen-1 est implémenté** : la porte d'autorisation, le moteur de politiques
+  (R0–R4), TaskGraph, le journal d'audit, les rapports structurés, le schéma
+  unifié des constatations et les adaptateurs `nuclei` / `bandit` / `gitleaks` /
+  `semgrep` existent en tant que chemins de code. Les suites de tests se trouvent
+  sous `tests/` — exécutez-les et fiez-vous à la sortie réelle ; ce dépôt ne formule
+  aucune affirmation anticipée de « tout au vert » ni de nombre de vérifications
+  réussies.
+- **Non vérifié / non implémenté** : la vérification de bout en bout avec les outils
+  réels n'est pas terminée ; la Phase B n'a pas été exécutée ; les éléments W1-03,
+  W1-04, W1-06 et CR-06 ainsi que la base de référence Semgrep réelle restent
+  ouverts ; la vérification Linux/macOS et le CI ne sont pas en place ; Gen-2 n'est
+  pas implémenté dans ce dépôt. La présence du code d'un adaptateur n'est pas la
+  preuve d'une exécution vérifiée, et le durcissement d'API n'est pas un bac à sable
+  au niveau du système d'exploitation (voir section 9).
+- Le packaging doit être jugé sur une construction de cette version ; les anciens
+  artefacts de construction ne constituent pas une preuve pour la version actuelle.
 
 ## 12. Licence et retours
 

@@ -20,7 +20,7 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-环境要求)
 [![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#4-环境要求)
 [![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#8-授权与安全)
-[![Checks](https://img.shields.io/badge/Local%20Checks-427%2B%20Passing%20(local%20record)-2EA043)](#11-项目状态)
+[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#11-项目状态)
 
 [English](../../README.md) · **中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md)
 
@@ -39,8 +39,8 @@ DualVerify-Sentinel 是一个**基于规则的安全验证引擎**（明确**非
 审计日志中，并且**失败关闭（fail-closed）**——授权缺失、损坏或过期意味着
 *拒绝执行*，而绝不是跳过校验。
 
-它是计划中的下一代验证架构的安全工程基础层（授权门禁 + 可靠执行引擎）。
-Gen-1 的规划/决策层有意保持确定性。
+它是安全工程基础层：授权门禁加确定性执行引擎。Gen-1 的规划/决策层有意保持
+确定性，**非模型驱动**。
 
 ## 2. 功能一览
 
@@ -70,6 +70,17 @@ Gen-1 作为单一确定性流水线运行——以下每项能力都由显式�
 
 发现按原样记录；未验证的输出绝不会被标记为已确认漏洞；每份报告都列出已知限制。
 
+### 扩展适配器与统一发现结构
+
+`vuln_hunter/adapters_ext/` 中还实现了两个可选适配器：`gitleaks`（密钥检测，
+步骤 `s4-gitleaks`）与 `semgrep`（静态分析，**仅使用本地规则文件**，步骤
+`s5-semgrep`）。两者仅对文件系统范围内的源码树按条件纳入计划，各自需要对应的
+可执行文件，且绝不从网络获取规则。所有适配器输出都会经统一的 Finding Schema
+（`findings.py`）归一化，在写入报告前校验严重级别与记录结构。
+
+> 这些适配器**已作为代码实现**；真实工具的端到端验证**尚未完成**。
+> 适配器存在不等于工具运行已通过验证 —— 见第 11 节。
+
 ## 3. 使用场景
 
 - 对自己的靶场目标和明确授权的主机进行验证。
@@ -83,7 +94,7 @@ Gen-1 作为单一确定性流水线运行——以下每项能力都由显式�
 | Python | >= 3.10（仅在 3.13.14 上测试过） |
 | 第三方依赖 | **无** — 纯标准库 |
 | 操作系统 | Windows **已验证**；Linux/macOS **尚未验证** |
-| 外部工具（可选） | `nuclei`、`bandit` — 缺失时优雅跳过 |
+| 外部工具（可选） | `nuclei`、`bandit`、`gitleaks`、`semgrep` — 适配器已实现；缺失时优雅跳过；真实工具运行尚未验证 |
 
 ## 5. 安装
 
@@ -169,12 +180,15 @@ RunTicket 的 frozen dataclass 与私有注册表是 **API 加固**，不是沙�
 
 ## 11. 项目状态
 
-- **Gen-1 稳定**：18 个离线测试套件、427+ 项检查在本地通过
-  （Windows，Python 3.13.14）。已通过 wheel/sdist 构建完成打包冒烟测试。
-- **Gen-2 架构**（未来的独立仓库）已规划，采用提案/裁决分离。
-  Gen-2 的工作不会在本仓库进行。
-- 完整测试命令见 `tests/` 下的测试套件 — 请运行并相信实际结果；本仓库
-  不预设"全绿"声明。
+- **Gen-1 已实现**：授权门禁、策略引擎（R0–R4）、TaskGraph、审计日志、结构化报告、
+  统一 Finding Schema，以及 `nuclei` / `bandit` / `gitleaks` / `semgrep` 适配器
+  均已作为代码路径存在。测试套件位于 `tests/` — 请运行并以实际输出为准；本仓库
+  不预设「全绿」声明，也不预设通过检查数量。
+- **未验证 / 未实现**：真实工具的端到端验证尚未完成；Phase B 未执行；W1-03、
+  W1-04、W1-06 与 CR-06 等事项以及真实 Semgrep 基线仍未关闭；Linux/macOS 验证
+  与 CI 尚未建立；本仓库未实现 Gen-2。适配器代码存在不等于工具运行已通过验证，
+  API 加固也不是操作系统级沙箱（见第 9 节）。
+- 打包情况必须以本版本的构建为准；旧构建产物不能作为当前版本的证据。
 
 ## 12. 许可与反馈
 

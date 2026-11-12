@@ -20,7 +20,7 @@ Ejecución determinista. Límites de autorización explícitos. Evidencia de seg
 [![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-requisitos)
 [![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#4-requisitos)
 [![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#8-autorización-y-seguridad)
-[![Checks](https://img.shields.io/badge/Local%20Checks-427%2B%20Passing%20(local%20record)-2EA043)](#11-estado-del-proyecto)
+[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#11-estado-del-proyecto)
 
 [English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · **Español** · [Français](README.fr.md)
 
@@ -41,10 +41,9 @@ auditoría con cadena de hash a prueba de manipulaciones, y funciona con
 **fail-closed** — la autorización ausente, corrupta o expirada significa
 *rechazo*, nunca una comprobación omitida.
 
-Es la capa de ingeniería de seguridad (puerta de autorización + motor de
-ejecución fiable) de una arquitectura de verificación de nueva generación
-planificada. La capa de planificación/decisión de Gen-1 es deliberadamente
-determinista.
+Es una capa de ingeniería de seguridad: una puerta de autorización más un motor
+de ejecución determinista. La capa de planificación/decisión de Gen-1 es
+deliberadamente determinista, no dirigida por modelos.
 
 ## 2. Qué puede hacer
 
@@ -74,6 +73,21 @@ Cadena de hash de solo adición (`seq`/`prev`/`h`, SHA-256); detección de manip
 
 Los hallazgos se registran tal cual; la salida no verificada nunca se etiqueta como vulnerabilidad confirmada; las limitaciones conocidas se listan en cada informe.
 
+### Adaptadores adicionales y esquema unificado de hallazgos
+
+En `vuln_hunter/adapters_ext/` se implementan otros dos adaptadores opcionales:
+`gitleaks` (detección de secretos, paso `s4-gitleaks`) y `semgrep` (análisis
+estático, **solo con archivos de reglas locales**, paso `s5-semgrep`). Ambos se
+planifican de forma condicional para árboles de código fuente con alcance de
+sistema de archivos, requieren sus propios binarios y nunca obtienen reglas por
+red. Toda salida de adaptador se normaliza mediante el esquema unificado de
+hallazgos (`findings.py`), que valida la severidad y la forma del registro antes
+de que un hallazgo llegue a un informe.
+
+> Estos adaptadores están **implementados como código**; la verificación de
+> extremo a extremo con herramientas reales **no se ha completado**. La presencia
+> de un adaptador no es prueba de una ejecución verificada — véase la sección 11.
+
 ## 3. Casos de uso
 
 - Validar sus propios objetivos de laboratorio y hosts explícitamente autorizados.
@@ -88,7 +102,7 @@ Los hallazgos se registran tal cual; la salida no verificada nunca se etiqueta c
 | Python | >= 3.10 (probado solo en 3.13.14) |
 | Dependencias de terceros | **Ninguna** — solo biblioteca estándar |
 | Sistema operativo | Windows **Verificado**; Linux/macOS **Aún no verificado** |
-| Herramientas externas (opcional) | `nuclei`, `bandit` — se omiten si no están presentes |
+| Herramientas externas (opcional) | `nuclei`, `bandit`, `gitleaks`, `semgrep` — adaptadores implementados; se omiten si no están presentes; ejecuciones con herramientas reales aún no verificadas |
 
 ## 5. Instalación
 
@@ -191,15 +205,21 @@ proceso (no implementadas). La CLI es el único punto de entrada soportado.
 
 ## 11. Estado del proyecto
 
-- **Gen-1 es estable**: 18 suites de pruebas fuera de línea, 427+ comprobaciones
-  aprobadas localmente (Windows, Python 3.13.14). Empaquetado probado mediante
-  compilaciones wheel/sdist.
-- Se planifica una **arquitectura Gen-2** (un repositorio futuro e independiente)
-  con separación de propuesta/adjudicación. El trabajo de Gen-2 no ocurrirá en
-  este repositorio.
-- Los comandos de prueba completos están en las suites bajo `tests/` — ejecútelos
-  y confíe en los resultados reales; este repositorio no hace afirmaciones
-  preventivas de "todo en verde".
+- **Gen-1 está implementado**: la puerta de autorización, el motor de políticas
+  (R0–R4), TaskGraph, el diario de auditoría, los informes estructurados, el
+  esquema unificado de hallazgos y los adaptadores `nuclei` / `bandit` /
+  `gitleaks` / `semgrep` existen como rutas de código. Las suites de pruebas están
+  en `tests/` — ejecútelas y confíe en la salida real; este repositorio no hace
+  afirmaciones preventivas de «todo en verde» ni de recuentos de comprobaciones.
+- **No verificado / no implementado**: la verificación de extremo a extremo con
+  herramientas reales no se ha completado; la Fase B no se ha ejecutado; los
+  elementos W1-03, W1-04, W1-06 y CR-06 y la línea base real de Semgrep siguen
+  abiertos; la verificación en Linux/macOS y el CI no están implantados; Gen-2 no
+  está implementado en este repositorio. La presencia de código de adaptador no es
+  prueba de una ejecución verificada, y el endurecimiento de API no es una sandbox
+  a nivel de sistema operativo (véase la sección 9).
+- El empaquetado debe juzgarse mediante una compilación de esta versión; los
+  artefactos de compilación antiguos no son prueba para la versión actual.
 
 ## 12. Licencia y comentarios
 

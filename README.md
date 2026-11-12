@@ -20,7 +20,7 @@ Deterministic execution. Explicit authorization boundaries. Auditable security e
 [![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-requirements)
 [![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#4-requirements)
 [![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#8-authorization-and-safety)
-[![Checks](https://img.shields.io/badge/Local%20Checks-427%2B%20Passing%20(local%20record)-2EA043)](#11-project-status)
+[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#11-project-status)
 
 **English** · [中文](docs/i18n/README.zh-CN.md) · [日本語](docs/i18n/README.ja.md) · [한국어](docs/i18n/README.ko.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md)
 
@@ -39,9 +39,9 @@ model-driven**): every execution step is policy-checked against a machine-readab
 authorization scope, journaled in a tamper-evident hash chain, and **fail-closed** —
 missing, corrupted, or expired authorization means *refusal*, never a skipped check.
 
-It is the security-engineering foundation layer (authorization gate + reliable
-execution engine) of a planned next-generation verification architecture. The
-planning/decision layer is intentionally deterministic in Gen-1.
+It is a security-engineering foundation layer: an authorization gate plus a
+deterministic execution engine. The planning/decision layer in Gen-1 is
+intentionally deterministic, not model-driven.
 
 ## 2. What can it do?
 
@@ -71,6 +71,20 @@ Append-only hash chain (`seq`/`prev`/`h`, SHA-256); tamper/reorder detection; au
 
 Findings recorded as-is; unverified output is never labeled a confirmed vulnerability; known limitations are listed in every report.
 
+### Additional adapters and unified findings
+
+Two optional adapters are implemented in `vuln_hunter/adapters_ext/`:
+`gitleaks` (secret detection, step `s4-gitleaks`) and `semgrep` (static analysis
+with **local rule files only**, step `s5-semgrep`). Both are conditionally planned
+for filesystem-scoped source trees, require their own binaries, and never fetch
+rules over the network. All adapter output is normalised through the unified
+Finding Schema (`findings.py`), which validates severity and record shape before
+a finding reaches a report.
+
+> These adapters are **implemented as code**; real-tool end-to-end verification
+> has **not** been completed. Adapter presence is not evidence of a verified
+> tool run — see section 11.
+
 ## 3. Use cases
 
 - Validating your own lab targets and explicitly authorized hosts.
@@ -84,7 +98,7 @@ Findings recorded as-is; unverified output is never labeled a confirmed vulnerab
 | Python | >= 3.10 (tested on 3.13.14 only) |
 | Third-party dependencies | **None** — standard library only |
 | OS | Windows **Verified**; Linux/macOS **Not Yet Verified** |
-| External tools (optional) | `nuclei`, `bandit` — skipped gracefully if absent |
+| External tools (optional) | `nuclei`, `bandit`, `gitleaks`, `semgrep` — adapters implemented; skipped gracefully if absent; real-tool runs not yet verified |
 
 ## 5. Installation
 
@@ -179,12 +193,19 @@ supported entry point.
 
 ## 11. Project status
 
-- **Gen-1 is stable**: 18 offline test suites, 427+ checks passing locally
-  (Windows, Python 3.13.14). Packaging smoke-tested via wheel/sdist builds.
-- A **Gen-2 architecture** (a separate, future repository) is planned with
-  proposal/adjudication separation. Gen-2 work will not happen in this repository.
-- Full test commands are listed in the test suites under `tests/` — run them and
-  trust the actual results; this repository makes no pre-asserted "all green" claim.
+- **Gen-1 is implemented**: authorization gate, policy engine (R0–R4), TaskGraph,
+  audit journal, structured reports, the unified Finding Schema, and the
+  `nuclei` / `bandit` / `gitleaks` / `semgrep` adapters exist as code paths.
+  Test suites live under `tests/` — run them and rely on the actual output; this
+  repository makes no pre-asserted "all green" or passing-check-count claim.
+- **Not verified / not implemented**: real-tool end-to-end verification has not
+  been completed; Phase B has not been executed; the W1-03, W1-04, W1-06 and
+  CR-06 items and the real Semgrep baseline remain open; Linux/macOS
+  verification and CI are not in place; Gen-2 is not implemented in this
+  repository. Adapter code being present is not evidence of a verified tool run,
+  and API hardening is not an OS-level sandbox (see section 9).
+- Packaging must be judged by a build of this version; older build artifacts are
+  not evidence for the current release.
 
 ## 12. License & feedback
 
