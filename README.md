@@ -15,7 +15,7 @@ Deterministic execution. Explicit authorization boundaries. Auditable security e
 
 <img src="assets/banner.svg" alt="DualVerify-Sentinel banner — shield mark, project name, one-line description and authorized-testing-only notice" width="720">
 
-[![Stars](https://img.shields.io/github/stars/zyh798-cell/DualVerify?style=social)](https://github.com/zyh798-cell/DualVerify/stargazers)
+[![Stars](https://img.shields.io/github/stars/zyh798-cell/DualVerify-Sentinel?style=social)](https://github.com/zyh798-cell/DualVerify-Sentinel/stargazers)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-requirements)
