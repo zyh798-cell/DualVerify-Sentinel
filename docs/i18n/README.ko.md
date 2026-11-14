@@ -1,133 +1,98 @@
 <div align="center">
 
-<img src="../../assets/logo.svg" alt="DualVerify-Sentinel 로고 — 듀얼 체크, 시안 관도 노드, DVS 워드마크가 있는 딥네이비 방패" width="110">
+<img src="../../assets/logo.svg" alt="DualVerify-Sentinel logo — deep navy shield with dual verification check, cyan orbit nodes and the DVS wordmark" width="110">
 
 # DUALVERIFY-SENTINEL
 
 ### ENGINEERED FOR TRUST.
 ### BUILT FOR CONTROL.
 
-**정책 기반 보안 검증 엔진**
+**명시적 인가, 결정적 실행, 검증 가능한 증거를 중심으로 설계된 정책 기반 보안 검증 엔진.**
 
-결정론적 실행. 명시적인 인가 경계. 감사 가능한 보안 증거.
+결정적 실행 · 명시적 인가 경계 · 감사 가능한 보안 증거.
 
 `zyh798-cell` / `DualVerify-Sentinel` · MIT
 
-<img src="../../assets/banner.svg" alt="DualVerify-Sentinel 배너 — 방패 마크, 프로젝트 이름, 한 줄 설명, 승인된 테스트 전용 안내" width="720">
+<img src="../../assets/banner.svg" alt="DualVerify-Sentinel banner — shield mark, project name, one-line description and authorized-testing-only notice" width="720">
 
+[![Star on GitHub](https://img.shields.io/badge/Star_on-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/zyh798-cell/DualVerify-Sentinel)
+[![Star](https://img.shields.io/badge/Star-grey?style=for-the-badge&logo=github)](https://github.com/zyh798-cell/DualVerify-Sentinel)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-요구-사항)
-[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#4-요구-사항)
-[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#8-인가와-안전)
-[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#11-프로젝트-현황)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#sec-7)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#sec-3)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#sec-5)
+[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#sec-8)
 
 [English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · **한국어** · [Español](README.es.md) · [Français](README.fr.md)
 
-[인가 게이트](#인가-게이트) · [정책 엔진](#정책-엔진과-위험-등급-체계) · [TaskGraph](#taskgraph-오케스트레이션) · [도구 어댑터](#도구-어댑터-nuclei--bandit) · [감사 저널](#감사-저널) · [보고](#구조화된-보고) · [설치](#5-설치) · [보안](../../SECURITY.md)
+[개요](#sec-1) · [구현 기능](#sec-2) · [빠른 시작](#sec-4) · [인가와 안전](#sec-5) · [플랫폼 테스트](#sec-7) · [기여](#sec-9) · [Security](../../SECURITY.md)
 
-> ⚠️ **AUTHORIZED SECURITY TESTING ONLY**
+> ⭐ **프로젝트가 도움이 된다면 Star를 눌러 주세요. 커뮤니티 테스트와 기여도 환영합니다.**
+
+> ⚠️ **인가된 보안 테스트 전용**
 
 </div>
 
 ---
 
-## 1. 이것은 무엇인가?
+<a id="sec-1"></a>
+## 1. DualVerify-Sentinel이란?
 
-DualVerify-Sentinel은 **규칙 기반(rule-based) 보안 검증 엔진**입니다
-(명시적으로 **모델 기반이 아님**). 모든 실행 단계는 기계 판독 가능한 인가 스코프에
-대해 정책 검사를 거치고, 변조 탐지 가능한 해시 체인 감사 저널에 기록되며,
-**페일 클로즈드(fail-closed)**로 동작합니다 — 인가가 없거나, 손상되었거나,
-만료되었다면 *거부*될 뿐, 검사가 생략되는 일은 없습니다.
+DualVerify-Sentinel(DVS)는 **정책 기반 보안 검증 엔진**입니다. 모든 실행 단계는 기계가 읽을 수 있는 인가 범위에 대해 검사되고, 변조를 탐지할 수 있는 증거 저널에 기록되며, **실패 시 거부(fail-closed)** 방식으로 동작합니다. 인가가 없거나 손상되었거나 만료된 경우 검사를 건너뛰지 않고 거부합니다.
 
-Gen-1은 결정론적·정책 기반 보안 검증 엔진이며, **자율 LLM 에이전트가 아닙니다**.
-인가 게이트와 결정론적 실행 엔진으로 구성된 보안 엔지니어링 기반 계층입니다.
-계획/의사결정 계층은 의도적으로 결정론적으로 유지되며, 모델 기반이 아닙니다.
+이는 보안 엔지니어링의 기반 계층, 즉 인가 게이트와 결정적 실행 엔진입니다. Gen-1의 계획 계층은 **정적 규칙 기반 템플릿**이며, 모델 기반 또는 적응형 플래너가 아닙니다.
 
-## 2. 무엇을 할 수 있나?
+**현재 DVS가 아닌 것**: 범용 에이전트 플랫폼, LLM 에이전트 런타임, 모델 기반 자율 의사결정 시스템, OS 수준 샌드박스. 이들은 장기 방향이며 현재 기능이 아닙니다.
 
-Gen-1은 단일 결정론적 파이프라인으로 동작합니다 — 아래의 모든 기능은 모델 판단이 아닌 명시적인 코드 경로로 강제됩니다.
+<a id="sec-2"></a>
+## 2. 현재 구현된 기능
 
-### 인가 게이트
+아래 기능은 모델 판단이 아니라 명시적 코드 경로로 강제됩니다.
 
-기계 판독 가능한 scope JSON을 **격리된 서브프로세스**에서 검증. 누락/손상/만료 → REFUSED (종료 코드 2). 우회 경로는 존재하지 않습니다. 어댑터는 정책 엔진이 발급한 티켓만 수용하며, 스코프 해시·모드·대상·윈도우를 **실행 시점에 재차 독립 검증**합니다.
-
-### 정책 엔진과 위험 등급 체계
-
-위험 상한이 증가하는 5가지 모드 (R0–R4, [기본 사용법](#6-기본-사용법) 참조). 명시적 규칙 P0–P8: 거부/중단/실패가 하나라도 있으면 루프를 중지. 대상은 **절대** 확장되지 않습니다.
-
-### TaskGraph 오케스트레이션
-
-하드 예산이 적용된 상태 머신 (최대 32노드, 스폰 깊이 2, 스폰 8회). 동적 스폰은 부모 COMPLETED를 전제로 합니다.
-
-### 도구 어댑터 (nuclei / bandit)
-
-`nuclei` (템플릿 스캔)와 `bandit` (정적 분석) — 미설치 시 preflight 리포트와 함께 정상적으로 SKIPPED. 안전한 실행: 단계별 12항목 검사 체인. 파괴적 기법 없음, 지속화 없음, 페이로드 제작 없음, 발견된 데이터의 외부 전송 없음.
-
-### 감사 저널
-
-추가 전용 해시 체인 (`seq`/`prev`/`h`, SHA-256). 변조/재정렬 탐지. 감사 장애는 종료 코드 3으로 종료되며 정상 결과로 위장하지 않습니다.
-
-### 구조화된 보고
-
-발견 사항은 그대로 기록. 검증되지 않은 출력은 확인된 취약점으로 표시되지 않습니다. 알려진 제한 사항은 모든 리포트에 나열됩니다.
-
-### 추가 어댑터와 통합 Finding Schema
-
-`vuln_hunter/adapters_ext/`에는 두 개의 선택적 어댑터가 추가로 구현되어 있습니다:
-`gitleaks`(시크릿 탐지, 단계 `s4-gitleaks`)와 `semgrep`(정적 분석,
-**로컬 규칙 파일만 사용**, 단계 `s5-semgrep`). 두 어댑터는 파일 시스템 범위의
-소스 트리에 대해 조건부로 계획되며, 각각 자체 실행 파일이 필요하고 네트워크에서
-규칙을 가져오지 않습니다. 모든 어댑터 출력은 통합 Finding Schema
-(`findings.py`)를 통해 정규화되어, 보고서에 도달하기 전에 심각도와 레코드
-형태가 검증됩니다.
-
-> 이 어댑터들은 **코드로 구현되어 있지만**, 실제 도구의 종단 간 검증은
-> **완료되지 않았습니다**. 어댑터의 존재는 검증된 도구 실행의 근거가 아닙니다
-> — 11절 참조.
-
-## 3. 사용 사례
-
-- 자신이 소유하거나 운영하는 랩 대상, 명시적으로 인가된 호스트의 검증.
-- 완전한 감사 추적을 갖춘, 재현 가능하고 증거를 산출하는 보안 검사 실행.
-- 상위 수준 검증 파이프라인을 구축하기 위한 기반 계층.
-
-## 4. 요구 사항
-
-| 요구 사항 | 상세 |
+| 기능 | 구현 내용 |
 |---|---|
-| Python | >= 3.10 (3.13.14에서만 테스트됨) |
-| 서드파티 의존성 | **없음** — 표준 라이브러리만 사용 |
-| 운영체제 | Windows **검증됨**; Linux/macOS **아직 미검증** |
-| 외부 도구 (선택) | `nuclei`, `bandit`, `gitleaks`, `semgrep` — 어댑터 구현됨; 없으면 정상적으로 건너뜀; 실제 도구 실행은 미검증 |
+| **명시적 인가** | 범위 JSON을 **독립 서브프로세스**에서 검증합니다. 실행 시 범위 해시, 모드, 대상, 시간 창을 다시 독립적으로 확인합니다. 누락·손상·만료 → 거부하며 우회 경로가 없습니다. |
+| **정책 기반 실행** | 위험 상한이 점증하는 5개 모드: `passive`(R0), `safe_scan`(R1), `vuln_validation`(R2), `attack_simulation`(R3), `high_risk`(R4). 명시적 결정 규칙은 거부·중단·실패 시 루프를 멈추며, 대상 범위를 확장하지 않습니다. |
+| **위험 인지 제어** | TaskGraph 상태 머신에 하드 예산(최대 32 노드, 파생 깊이 2, 파생 8회), 부모 COMPLETED 상태를 조건으로 하는 동적 파생, 단계별 12단계 검사 체인. 파괴적 기법, 지속성, 페이로드 생성, 발견 데이터 유출을 사용하지 않습니다. |
+| **보안 도구 연동** | 핵심 어댑터 `nuclei` / `bandit`, 그리고 `vuln_hunter/adapters_ext/`의 선택적 `gitleaks` / `semgrep` 어댑터(로컬 규칙 파일만 사용, 네트워크에서 규칙을 가져오지 않음). 모든 출력은 통합 Finding Schema(`findings.py`)로 정규화됩니다. 바이너리가 없으면 사전 보고와 함께 안전하게 건너뜁니다. |
+| **검증 가능한 감사 증거** | 추가 전용 SHA-256 해시 체인(`seq` / `prev` / `h`)으로 변조와 순서 변경을 탐지합니다. 감사 실패는 종료 코드 3으로 명시되며, 인증되지 않은 결과를 정상 결과로 위장하지 않습니다. |
+| **정직하고 구조화된 보고** | 발견 항목은 있는 그대로 기록하고, 검증되지 않은 도구 출력을 확인된 취약점으로 표시하지 않으며, 모든 보고서에 알려진 제한을 기재합니다. 탐지 정확도나 정답률을 주장하지 않습니다. |
 
-## 5. 설치
+> 어댑터는 **코드로 구현되어 있습니다**. 코드의 존재는 실제 도구 실행 검증의 증거가 아닙니다. 실제 도구 종단 간 검증은 아직 완료되지 않았습니다(8절 참조).
+
+<a id="sec-3"></a>
+## 3. 요구 사항
+
+| 항목 | 내용 |
+|---|---|
+| Python | >= 3.10 (3.13.14에서 검증) |
+| 의존성 | **표준 라이브러리만** — 서드파티 런타임 의존성 없음 |
+| OS | Windows **검증됨**; Linux / macOS **미검증** — 7절 참조 |
+| 선택적 외부 도구 | `nuclei`, `bandit`, `gitleaks`, `semgrep` — 없으면 안전하게 건너뜀 |
+
+<a id="sec-4"></a>
+## 4. 설치 및 빠른 시작
 
 ```bash
 git clone https://github.com/zyh798-cell/DualVerify-Sentinel.git
 cd DualVerify-Sentinel
 
 python -m venv .venv
-
-# Windows (PowerShell):
-.venv\Scripts\Activate.ps1
-# Windows (CMD):
-.venv\Scripts\activate.bat
-# Linux/macOS:
-source .venv/bin/activate
+# Windows (PowerShell): .venv\Scripts\Activate.ps1
+# Windows (CMD):        .venv\Scripts\activate.bat
+# Linux/macOS:          source .venv/bin/activate
 
 pip install .
 ```
 
-개발용 편집 설치(editable install) `pip install -e .`도 지원됩니다.
+개발용으로 `pip install -e .`도 지원합니다.
 
-## 6. 기본 사용법
-
-**1단계 — scope 파일 검증 (반드시 먼저 수행):**
+**1단계 — 항상 먼저 범위 파일을 검증하세요:**
 
 ```bash
 dvs gate-check scripts/example-scope.json
-# 종료 코드 0 = 스코프 유효 · 1 = 거부
+# 0 = 유효 · 1 = 거부 · 2 = 사용법 오류
 ```
 
 **2단계 — 검증 실행:**
@@ -137,87 +102,81 @@ dvs run --scope scripts/example-scope.json --mode safe_scan --target 127.0.0.1:8
 # 또는: python -m vuln_hunter run --scope ... --mode ... --target ...
 ```
 
-모드 (위험 상한 증가 순): `passive` → `safe_scan` → `vuln_validation` →
-`attack_simulation` → `high_risk` (R0–R4). `nuclei`는 R2 이상에서만 호출됩니다.
+모드(위험 상한 순): `passive` → `safe_scan` → `vuln_validation` → `attack_simulation` → `high_risk`(R0–R4). `nuclei`는 R2 이상에서만 호출됩니다.
 
-종료 코드: `0` 모든 단계 COMPLETED · `1` 실패/거부와 함께 완료 ·
-`2` 게이트/정책 수준 거부 (아무것도 실행되지 않음) · `3` **감사 장애**
-(저널 기록 불가/검증 불가 — 결과는 인증되지 않음).
+종료 코드: `0` 모든 단계 완료 · `1` 실패/거부가 있는 종료 · `2` 게이트/정책 수준 거부(아무 것도 실행하지 않음) · `3` **감사 실패**(저널을 쓰거나 검증할 수 없어 결과가 인증되지 않음).
 
-`scripts/example-scope.json`은 가상의 예시이며 **실제 인가 기록이 아닙니다**.
+`scripts/example-scope.json`은 가상의 예시이며 **실제 인가가 아닙니다**.
 
-## 7. 스코프 의미론
+<a id="sec-5"></a>
+## 5. 인가와 안전
 
-- 항목은 **파싱된 호스트명 일치**로 판별됩니다 (포트 없는 항목은 해당 호스트의
-  임의 포트와 일치). **CIDR 범위는 지원되지 않습니다** — `host` 또는
-  `host:port` 항목을 사용하세요.
-- 인가 윈도우는 **모든 실행 단계마다** 재검사되며, 실행 중 만료 시 이후 단계를
-  중단합니다.
-- 스코프 내용의 해시는 각 실행 티켓에 바인딩되며, 스코프 변경 시 미완료 티켓은
-  무효화됩니다.
-- 파일시스템 스코프 단계는 네트워크 스코프 검사만 건너뛰고, 나머지 정책 검사는
-  그대로 적용됩니다.
+> ⚠️ **DVS는 직접 소유·운영하는 시스템, 로컬 실험 대상, 또는 소유자로부터 명시적인 서면 인가를 받은 호스트에만 사용하세요.**
 
-## 8. 인가와 안전
+인가되지 않았거나 범위를 벗어나거나 만료되었거나 손상된 설정은 거부됩니다. 인가를 건너뛰는 코드 경로는 없습니다.
 
-> ⚠️ **이 도구는 자신이 소유하거나 운영하는 시스템, 로컬 랩 대상, 또는 소유자의
-> 명시적인 서면 인가를 보유한 호스트에만 사용하세요.** 무단, 범위 외, 윈도우
-> 만료, 손상된 구성은 거부됩니다 (페일 클로즈드). 인가를 건너뛰는 코드 경로는
-> 존재하지 않습니다.
+- 항목은 **파싱된 호스트명 일치**로 비교됩니다. 포트가 없는 항목은 해당 호스트의 모든 포트에 일치합니다. **CIDR 범위는 지원하지 않습니다** — `host` 또는 `host:port`를 사용하세요.
+- 인가 시간 창은 **모든 실행 단계**에서 재확인되며, 실행 중 만료되면 이후 단계가 중단됩니다.
+- 범위 내용은 해시로 각 실행 티켓에 묶이며, 범위를 변경하면 미사용 티켓이 무효화됩니다.
+- 파일 시스템 범위 단계는 네트워크 범위 검사만 건너뛰고, 다른 정책 검사는 모두 적용됩니다.
 
-번들된 예시 스코프는 가상의 것입니다. 실제 업무에는 실제의, 기계 판독 가능한
-인가 기록이 필요합니다 — 이 저장소 외부에 보관하세요.
+실제 인가 기록은 이 저장소 밖에 보관하세요. 포함된 예시는 가상입니다.
 
-## 9. API 강화는 샌드박스가 아닙니다
+**API 강화는 OS 수준 샌드박스가 아닙니다.** `RunTicket`의 frozen dataclass와 비공개 레지스트리는 Python 수준 강화이며, 프로세스 내 악성 코드는 우회할 수 있습니다. 강력한 격리에는 프로세스 수준 조치가 필요하며 현재 구현되어 있지 않습니다. 지원되는 진입점은 CLI뿐입니다.
 
-RunTicket의 frozen dataclass와 프라이빗 레지스트리는 **API 강화**이지 샌드박스가
-아닙니다 — 악의적인 프로세스 내 코드는 모든 Python 수준 검사를 우회할 수
-있습니다. 강한 격리에는 프로세스 수준 조치가 필요합니다 (미구현). CLI가 유일하게
-지원되는 진입점입니다.
+<a id="sec-6"></a>
+## 6. 증거와 정직한 보고
 
-## 10. 알려진 제한 사항
+감사 저널은 추가 전용이며 해시 체인으로 연결되어 변조와 순서 변경을 탐지합니다. 감사 실패는 숨기지 않고 명시됩니다. 실행 보고서는 완전·부분·불완전 결과를 구분하며, 불완전한 결과는 실패 시 거부되어 수집된 발견 항목에 포함되지 않습니다.
 
-1. **프로세스 내 샌드박스 없음** — 섹션 9 참조.
-2. **Windows 우선** — Windows의 타임아웃 경로는 필드화된 프로세스 트리 정리를
-   수행합니다 (루트 kill 전에 `taskkill /T /F`를 먼저 실행하고 모든 결과를
-   기록). 관리된 3계층 프로세스 트리 훈련에서 검증되었으나 **절대적 보장은
-   아닙니다** (런타임 잔존 확인 없음; taskkill의 rc=0은 트리 전체 정리 완료를
-   의미하지 않음; 실제 Nuclei 자손 프로세스 형태는 미검증). 비 Windows
-   플랫폼에서는 트리 kill이 건너뛰어집니다 (루트만 kill). nuclei 경로 폴백은
-   특정 로컬 `~/Tools/nuclei/` 레이아웃을 가정합니다.
-3. **탐지 정확성 미보장** — 도구 출력은 그대로 기록되며, 검증되지 않은 결과는
-   확인된 취약점으로 표시되지 않습니다.
-4. **Linux/macOS 미검증** — CI는 비 Windows 플랫폼을 다루지 않습니다.
-5. **저널 말단(truncation) 잘림** — 외부에 head 앵커를 저장한 경우에만 탐지
-   가능. 리포트 내 앵커는 일관성 확인용입니다.
-6. **Gen-1 플래너는 정적 템플릿** — 계획은 결정론적이며, 모델 기반이나 적응적이지
-   않습니다.
+두 가지 경계를 분명히 합니다. 도구 출력은 있는 그대로 기록되며 검증되지 않은 출력이 확인된 취약점으로 승격되지 않습니다. 또한 저널 꼬리 잘림은 외부에 head 앵커가 저장되어 있을 때만 탐지할 수 있습니다.
 
-## 11. 프로젝트 현황
+<a id="sec-7"></a>
+## 7. 플랫폼 호환성과 커뮤니티 테스트
 
-- **Gen-1 구현됨**: 인가 게이트, 정책 엔진(R0–R4), TaskGraph, 감사 저널,
-  구조화된 보고, 통합 Finding Schema, 그리고 `nuclei` / `bandit` / `gitleaks` /
-  `semgrep` 어댑터가 코드 경로로 존재합니다. 테스트 스위트는 `tests/` 아래에 있습니다
-  — 실행하고 실제 결과를 신뢰하세요. 이 저장소는 사전에 "전부 통과"나 통과 검사
-  개수를 주장하지 않습니다.
-- **미검증 / 미구현**: 실제 도구의 종단 간 검증이 완료되지 않았습니다; Phase B는
-  실행되지 않았습니다; W1-03, W1-04, W1-06, CR-06 항목과 실제 Semgrep 기준선은
-  미해결 상태입니다; Linux/macOS 검증과 CI는 갖춰져 있지 않습니다; Gen-2는 이
-  저장소에 구현되지 않았습니다. 어댑터 코드의 존재는 검증된 도구 실행의 근거가
-  아니며, API 강화는 OS 수준 샌드박스가 아닙니다(9절 참조).
-- 패키징은 반드시 이 버전의 빌드로 판단해야 합니다. 오래된 빌드 산출물은 현재
-  릴리스의 근거가 되지 않습니다.
+**커뮤니티 테스트를 환영합니다. 플랫폼 호환성 확장에 도움을 주세요.**
 
-## 12. 라이선스 및 피드백
+DVS는 현재 **Windows 우선**입니다. Windows의 타임아웃 경로는 기록이 남는 프로세스 트리 정리를 수행합니다(루트 종료 전 `taskkill /T /F`를 실행하고 모든 결과를 기록). 통제된 훈련에서 확인했지만 잔여 프로세스가 전혀 없음을 절대적으로 보장하지는 않습니다. 비 Windows 플랫폼에서는 트리 종료가 생략되고 루트 프로세스만 종료됩니다. `nuclei` 경로 폴백 또한 특정 로컬 설치 구조를 가정합니다.
+
+Linux와 macOS는 **검증되지 않았고** CI도 아직 다루지 않습니다. 다른 플랫폼에서 실행해 보셨다면 동작한 부분과 그렇지 않은 부분을 issue로 공유해 주세요. 어댑터 동작, 프로세스 정리, 패키징이 특히 유용합니다. 실제 대상 데이터, 자격 증명, 인가 없는 스캔 출력은 첨부하지 마세요.
+
+<a id="sec-8"></a>
+## 8. 프로젝트 현황과 방향
+
+| | |
+|---|---|
+| **구현 완료(Gen-1)** | 인가 게이트, 정책 엔진(R0–R4), TaskGraph, 감사 저널, 구조화된 보고서, 통합 Finding Schema, 그리고 `nuclei` / `bandit` / `gitleaks` / `semgrep` 어댑터 코드 경로. |
+| **구축·검증 중** | 실제 도구 종단 간 검증, 비 Windows 검증 및 CI, 현재 버전의 패키징 검증. 테스트 스위트는 `tests/`에 있습니다. 직접 실행하고 실제 출력을 근거로 삼으세요. 이 저장소는 "전체 통과"를 미리 주장하지 않습니다. |
+| **장기 방향** | 모델 기반 계획, 더 강한 프로세스 수준 격리, 더 넓은 플랫폼 지원. 모두 방향일 뿐이며 Gen-1에 **구현되어 있지 않습니다**. |
+
+현재 계획 계층은 결정적 정적 템플릿입니다. 어댑터 코드의 존재는 도구 실행 검증을 뜻하지 않으며, API 강화는 OS 수준 샌드박스가 아닙니다. 패키징은 현재 버전을 실제로 빌드해 판단해야 하며, 오래된 빌드 산출물은 현재 버전의 증거가 되지 않습니다. 이는 엔지니어링 기반 계층이며 상용 수준의 평가 제품이 아닙니다.
+
+<a id="sec-9"></a>
+## 9. 기여와 참여
+
+Star는 다른 사람들이 프로젝트를 발견하는 데 도움이 됩니다. 자신의 실험 환경에서 사용해 보고, 관찰한 내용을 알려주고, Pull Request를 보내는 것 모두 환영합니다. 자세한 내용은 [CONTRIBUTING.md](../../CONTRIBUTING.md)를 참조하세요.
+
+참여할 수 있는 영역:
+
+- **플랫폼 적응 및 호환성 테스트** — Linux/macOS 동작, 프로세스 트리 정리, 패키징.
+- **보안 도구 Provider / Adapter 통합** — 인가 게이트와 fail-closed 설계를 지키는 새 연동.
+- **테스트 케이스와 회귀 기준선** — 재현 가능하고 증거를 남기는 검사.
+- **문서와 다국어** — 6개 언어 README, 예시, 가독성.
+- **버그 수정과 코드 품질** — 실행 가능한 증거를 담은 작고 집중된 변경.
+- **보안 연구** — [SECURITY.md](../../SECURITY.md)를 따르세요. 공개되지 않은 취약점을 공개 issue로 올리지 마세요.
+- **사용 경험과 기능 제안** — 먼저 issue로 범위를 합의하세요.
+
+버그·플랫폼 결과·제안에는 **Issues**, 코드 및 문서 변경에는 **Pull Requests**를 사용하세요. 실제 대상 데이터, 자격 증명, 사적 인가 기록, 인가 없는 스캔 출력을 issue나 PR에 첨부하지 마세요.
+
+<a id="sec-10"></a>
+## 10. 라이선스와 링크
 
 - **라이선스**: MIT — [LICENSE](../../LICENSE) 참조.
-- **보안 정책**: [SECURITY.md](../../SECURITY.md) 참조.
-- **기여 가이드**: [CONTRIBUTING.md](../../CONTRIBUTING.md) 참조.
-- Issue와 Pull Request를 환영합니다. 보안 관련 제보는 공개 issue를 열지 말고
-  SECURITY.md의 안내를 따라주세요.
+- **보안 정책**: [SECURITY.md](../../SECURITY.md).
+- **기여 가이드**: [CONTRIBUTING.md](../../CONTRIBUTING.md).
+- **Issues / PR**: [issue 열기](https://github.com/zyh798-cell/DualVerify-Sentinel/issues) · [PR 열기](https://github.com/zyh798-cell/DualVerify-Sentinel/pulls).
+- **번역**: 中文 · 日本語 · 한국어 · Español · Français(상단 언어 전환 참조).
 
 ---
 
-<div align="center">
-<sub>DualVerify-Sentinel · Deterministic Security Validation Engine · MIT © 2026 zyh798-cell</sub>
-</div>
+<div align="center"><sub>DualVerify-Sentinel · Engineered for Trust. Built for Control. · MIT © 2026 zyh798-cell</sub></div>

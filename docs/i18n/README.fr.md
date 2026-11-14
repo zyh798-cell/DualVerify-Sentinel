@@ -1,138 +1,109 @@
 <div align="center">
 
-<img src="../../assets/logo.svg" alt="Logo DualVerify-Sentinel — bouclier bleu marine avec double coche, nœuds d’orbite cyan et le logotype DVS" width="110">
+<img src="../../assets/logo.svg" alt="DualVerify-Sentinel logo — deep navy shield with dual verification check, cyan orbit nodes and the DVS wordmark" width="110">
 
 # DUALVERIFY-SENTINEL
 
 ### ENGINEERED FOR TRUST.
 ### BUILT FOR CONTROL.
 
-**Moteur de validation de sécurité piloté par politiques**
+**Un moteur de validation de sécurité fondé sur une autorisation explicite, une exécution déterministe et des preuves vérifiables.**
 
 Exécution déterministe. Limites d'autorisation explicites. Preuves de sécurité auditables.
 
 `zyh798-cell` / `DualVerify-Sentinel` · MIT
 
-<img src="../../assets/banner.svg" alt="Bannière DualVerify-Sentinel — marque de bouclier, nom du projet, description en une ligne et mention tests autorisés uniquement" width="720">
+<img src="../../assets/banner.svg" alt="DualVerify-Sentinel banner — shield mark, project name, one-line description and authorized-testing-only notice" width="720">
 
+[![Star on GitHub](https://img.shields.io/badge/Star_on-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/zyh798-cell/DualVerify-Sentinel)
+[![Star](https://img.shields.io/badge/Star-grey?style=for-the-badge&logo=github)](https://github.com/zyh798-cell/DualVerify-Sentinel)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#4-prérequis)
-[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#4-prérequis)
-[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#8-autorisation-et-sécurité)
-[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#11-état-du-projet)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#sec-7)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#sec-3)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#sec-5)
+[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#sec-8)
 
 [English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · **Français**
 
-[Autorisation](#porte-dautorisation) · [Moteur de politiques](#moteur-de-politiques-et-échelle-de-risque) · [TaskGraph](#orchestration-taskgraph) · [Adaptateurs](#adaptateurs-doutils-nuclei--bandit) · [Audit](#journal-daudit) · [Rapports](#rapports-structurés) · [Installation](#5-installation) · [Sécurité](../../SECURITY.md)
+[Présentation](#sec-1) · [Fonctionnalités](#sec-2) · [Démarrage rapide](#sec-4) · [Sécurité](#sec-5) · [Tests de plateforme](#sec-7) · [Contribuer](#sec-9) · [Security](../../SECURITY.md)
 
-> ⚠️ **TESTS DE SÉCURITÉ AUTORISÉS UNIQUEMENT**
+> ⭐ **Si ce projet vous est utile, attribuez-lui une étoile. Les tests communautaires et les contributions sont bienvenus.**
+
+> ⚠️ **RÉSERVÉ AUX TESTS DE SÉCURITÉ AUTORISÉS**
 
 </div>
 
 ---
 
-## 1. Qu'est-ce que c'est ?
+<a id="sec-1"></a>
+## 1. Qu'est-ce que DualVerify-Sentinel ?
 
-DualVerify-Sentinel est un **moteur de validation de sécurité fondé sur des
-règles** (explicitement **NON piloté par modèle**) : chaque étape d'exécution est
-vérifiée par rapport à un périmètre d'autorisation lisible par machine, consignée
-dans un journal d'audit à chaîne de hachage infalsifiable, et fonctionne en
-**fail-closed** — une autorisation absente, corrompue ou expirée signifie un
-*refus*, jamais une vérification ignorée.
+DualVerify-Sentinel (DVS) est un **moteur de validation de sécurité piloté par
+des politiques** : chaque étape d'exécution est vérifiée contre un périmètre
+d'autorisation lisible par machine, consignée dans un journal de preuves
+inviolable, et applique un **échec fermé (fail-closed)** — une autorisation
+absente, corrompue ou expirée produit un refus, jamais une vérification omise.
 
-C'est une couche d'ingénierie de sécurité : une porte d'autorisation associée à
-un moteur d'exécution déterministe. La couche planification/décision de Gen-1 est
-volontairement déterministe, et non pilotée par modèle.
+C'est une couche socle d'ingénierie de sécurité : une porte d'autorisation et un
+moteur d'exécution déterministe. La planification Gen-1 est un **modèle statique
+fondé sur des règles**, et non un planificateur piloté par modèle ou adaptatif.
 
-## 2. Ce qu'il sait faire
+**Ce que DVS n'est pas aujourd'hui** : une plateforme d'agents généraliste, un
+runtime d'agents LLM, un système de décision autonome piloté par modèle, ou un
+bac à sable au niveau du système d'exploitation. Ce sont des orientations à long
+terme, pas des capacités actuelles.
 
-Gen-1 s'exécute comme un pipeline déterministe unique — chaque capacité ci-dessous est appliquée par des chemins de code explicites, et non par un jugement de modèle.
+<a id="sec-2"></a>
+## 2. Ce qu'il fait aujourd'hui
 
-### Porte d'autorisation
+Chaque capacité ci-dessous est appliquée par des chemins de code explicites, et non par le jugement d'un modèle.
 
-Le JSON de périmètre lisible par machine est validé dans un **sous-processus isolé** ; absent/corrompu/expiré → REFUSED (code de sortie 2). Aucune voie de contournement n'existe. Les adaptateurs n'acceptent que les tickets émis par le moteur de politiques ; le hachage du périmètre, le mode, la cible et la fenêtre sont **revérifiés de manière indépendante à l'exécution**.
+| Capacité | Ce qui est implémenté |
+|---|---|
+| **Autorisation explicite** | JSON de périmètre validé dans un **sous-processus isolé** ; hachage du périmètre, mode, cible et fenêtre revérifiés indépendamment à l'exécution. Périmètre absent, corrompu ou expiré → REFUS. Aucun contournement n'existe. |
+| **Exécution pilotée par politiques** | Cinq modes à plafond de risque croissant : `passive` (R0), `safe_scan` (R1), `vuln_validation` (R2), `attack_simulation` (R3), `high_risk` (R4). Des règles de décision explicites arrêtent la boucle sur refus, abandon ou échec ; les cibles ne sont jamais étendues. |
+| **Contrôles conscients du risque** | Machine à états TaskGraph avec budgets stricts (32 nœuds max, profondeur de dérivation 2, 8 dérivations), dérivations dynamiques conditionnées au statut COMPLETED du parent, et chaîne de 12 vérifications par étape. Aucune technique destructive, aucune persistance, aucune construction de charge, aucune exfiltration des données découvertes. |
+| **Intégration d'outils de sécurité** | Adaptateurs principaux `nuclei` et `bandit` ; adaptateurs optionnels `gitleaks` et `semgrep` dans `vuln_hunter/adapters_ext/` (fichiers de règles locaux uniquement, aucune récupération de règles par le réseau). Toutes les sorties sont normalisées via le Finding Schema unifié (`findings.py`). Un binaire absent est ignoré proprement avec un rapport préalable. |
+| **Preuves d'audit vérifiables** | Chaîne de hachage SHA-256 en ajout seul (`seq` / `prev` / `h`) avec détection de manipulation et de réordonnancement. Un échec d'audit se termine par le code 3 au lieu de présenter un résultat non certifié comme normal. |
+| **Rapports honnêtes et structurés** | Les constats sont enregistrés tels quels ; une sortie d'outil non vérifiée n'est jamais qualifiée de vulnérabilité confirmée ; les limites connues figurent dans chaque rapport ; aucune affirmation d'exactitude de détection n'est faite. |
 
-### Moteur de politiques et échelle de risque
+> Les adaptateurs sont **implémentés sous forme de code**. Leur présence ne
+> prouve pas une exécution vérifiée avec l'outil réel — la vérification de
+> bout en bout avec outils réels n'est pas terminée (voir la section 8).
 
-Cinq modes à plafond de risque croissant (R0–R4, voir [Utilisation de base](#6-utilisation-de-base)). Règles explicites P0–P8 : tout refus/abandon/échec arrête la boucle ; les cibles ne sont **jamais** élargies.
-
-### Orchestration TaskGraph
-
-Machine à états avec budgets stricts (max 32 nœuds, profondeur de spawn 2, 8 spawns) ; les spawns dynamiques exigent un parent COMPLETED.
-
-### Adaptateurs d'outils (nuclei / bandit)
-
-`nuclei` (scan de modèles) et `bandit` (analyse statique) — ignorés proprement (SKIPPED) avec un rapport de prévol si non installés. Exécution sûre : chaîne de 12 vérifications par étape ; aucune technique destructive, aucune persistance, aucune construction de payload, aucune exfiltration des données découvertes.
-
-### Journal d'audit
-
-Chaîne de hachage en ajout seul (`seq`/`prev`/`h`, SHA-256) ; détection de falsification/réordonnancement ; un échec d'audit termine avec le code 3 au lieu de se déguiser en résultat normal.
-
-### Rapports structurés
-
-Les constatations sont enregistrées telles quelles ; les sorties non vérifiées ne sont jamais étiquetées vulnérabilités confirmées ; les limitations connues sont listées dans chaque rapport.
-
-### Adaptateurs supplémentaires et schéma unifié des constatations
-
-Deux adaptateurs optionnels supplémentaires sont implémentés dans
-`vuln_hunter/adapters_ext/` : `gitleaks` (détection de secrets, étape
-`s4-gitleaks`) et `semgrep` (analyse statique, **fichiers de règles locaux
-uniquement**, étape `s5-semgrep`). Tous deux sont planifiés sous condition pour
-les arborescences de sources de portée « système de fichiers », nécessitent leurs
-propres binaires et ne récupèrent jamais de règles par le réseau. Toutes les
-sorties d'adaptateur sont normalisées via le schéma unifié des constatations
-(`findings.py`), qui valide la sévérité et la forme de l'enregistrement avant
-qu'une constatation n'atteigne un rapport.
-
-> Ces adaptateurs sont **implémentés en code**, mais la vérification de bout en
-> bout avec les outils réels **n'est pas terminée**. La présence d'un adaptateur
-> n'est pas la preuve d'une exécution vérifiée — voir section 11.
-
-## 3. Cas d'usage
-
-- Valider vos propres cibles de laboratoire et les hôtes explicitement autorisés.
-- Exécuter des vérifications de sécurité répétables, productrices de preuves et
-  dotées d'une piste d'audit complète.
-- Comme couche de base pour construire des pipelines de vérification de niveau
-  supérieur.
-
-## 4. Prérequis
+<a id="sec-3"></a>
+## 3. Prérequis
 
 | Prérequis | Détail |
 |---|---|
-| Python | >= 3.10 (testé uniquement sur 3.13.14) |
-| Dépendances tierces | **Aucune** — bibliothèque standard uniquement |
-| Système d'exploitation | Windows **Vérifié** ; Linux/macOS **Pas encore vérifié** |
-| Outils externes (optionnels) | `nuclei`, `bandit`, `gitleaks`, `semgrep` — adaptateurs implémentés ; ignorés s'ils sont absents ; exécutions avec outils réels non encore vérifiées |
+| Python | >= 3.10 (vérifié sur 3.13.14) |
+| Dépendances | **Bibliothèque standard uniquement** — aucune dépendance tierce à l'exécution |
+| OS | Windows **vérifié** ; Linux / macOS **pas encore vérifiés** — voir la section 7 |
+| Outils externes optionnels | `nuclei`, `bandit`, `gitleaks`, `semgrep` — ignorés proprement s'ils sont absents |
 
-## 5. Installation
+<a id="sec-4"></a>
+## 4. Installation et démarrage rapide
 
 ```bash
 git clone https://github.com/zyh798-cell/DualVerify-Sentinel.git
 cd DualVerify-Sentinel
 
 python -m venv .venv
-# Windows (PowerShell):
-.venv\Scripts\Activate.ps1
-# Windows (CMD):
-.venv\Scripts\activate.bat
-# Linux/macOS :
-source .venv/bin/activate
+# Windows (PowerShell) : .venv\Scripts\Activate.ps1
+# Windows (CMD) :        .venv\Scripts\activate.bat
+# Linux/macOS :          source .venv/bin/activate
 
 pip install .
 ```
 
-L'installation éditable `pip install -e .` est également disponible pour le
-développement.
+`pip install -e .` est également pris en charge pour le développement.
 
-## 6. Utilisation de base
-
-**Étape 1 — valider le fichier de périmètre (toujours en premier) :**
+**Étape 1 — toujours valider d'abord le fichier de périmètre :**
 
 ```bash
 dvs gate-check scripts/example-scope.json
-# code de sortie 0 = périmètre valide · 1 = refusé
+# 0 = valide · 1 = refusé · 2 = erreur d'usage
 ```
 
 **Étape 2 — lancer une validation :**
@@ -146,100 +117,126 @@ Modes (plafond de risque croissant) : `passive` → `safe_scan` →
 `vuln_validation` → `attack_simulation` → `high_risk` (R0–R4). `nuclei` n'est
 invoqué qu'à partir de R2.
 
-Codes de sortie : `0` toutes les étapes COMPLETED · `1` terminé avec
-échecs/refus · `2` refus au niveau porte/politique (rien n'a été exécuté) ·
-`3` **échec d'audit** (journal non inscriptible/non vérifiable — les résultats ne
-sont pas certifiés).
+Codes de sortie : `0` toutes les étapes COMPLETED · `1` terminé avec échecs/refus ·
+`2` refus au niveau porte/politique (rien exécuté) · `3` **échec d'audit** (le
+journal est inaccessible en écriture ou invérifiable, les résultats ne sont donc pas certifiés).
 
-`scripts/example-scope.json` est un exemple fictif — **ce n'est pas une
-autorisation réelle**.
+`scripts/example-scope.json` est un exemple fictif, **pas une autorisation réelle**.
 
-## 7. Sémantique du périmètre
+<a id="sec-5"></a>
+## 5. Autorisation et sécurité
 
-- Les entrées sont comparées par **égalité du nom d'hôte analysé** (une entrée
-  sans port correspond à n'importe quel port de cet hôte). **Les plages CIDR ne
-  sont PAS prises en charge** — utilisez des entrées `hôte` ou `hôte:port`.
-- La fenêtre d'autorisation est **revérifiée à chaque étape d'exécution** ; une
+> ⚠️ **N'utilisez DVS que sur des systèmes que vous possédez ou exploitez, des
+> cibles de laboratoire locales, ou des hôtes pour lesquels vous disposez d'une
+> autorisation écrite explicite du propriétaire.**
+
+Les configurations non autorisées, hors périmètre, à fenêtre expirée ou
+corrompues sont refusées. Aucun chemin de code ne contourne l'autorisation.
+
+- Les entrées sont comparées par **égalité du nom d'hôte analysé** ; une entrée
+  sans port correspond à n'importe quel port de cet hôte. **Les plages CIDR ne
+  sont pas prises en charge** — utilisez des entrées `host` ou `host:port`.
+- La fenêtre d'autorisation est revérifiée **à chaque étape d'exécution** ; une
   expiration en cours d'exécution interrompt les étapes suivantes.
-- Le hachage du contenu du périmètre est lié à chaque ticket ; modifier le
-  périmètre invalide les tickets en attente.
-- Les étapes à périmètre de système de fichiers ignorent uniquement la
-  vérification du périmètre réseau ; toutes les autres vérifications de
-  politique s'appliquent normalement.
+- Le contenu du périmètre est lié par hachage à chaque ticket d'exécution ;
+  modifier le périmètre invalide les tickets en attente.
+- Les étapes à périmètre de système de fichiers n'omettent que la vérification
+  de périmètre réseau ; toutes les autres vérifications de politique s'appliquent.
 
-## 8. Autorisation et sécurité
+Conservez les véritables enregistrements d'autorisation hors de ce dépôt. Le
+périmètre d'exemple fourni est fictif.
 
-> ⚠️ **N'utilisez cet outil QUE contre des systèmes que vous possédez ou
-> exploitez, des cibles de laboratoire locales, ou des hôtes pour lesquels vous
-> détenez une autorisation écrite explicite du propriétaire.** Les
-> configurations non autorisées, hors périmètre, à fenêtre expirée ou corrompues
-> sont refusées (fail-closed). Aucun chemin de code n'ignore l'autorisation.
+**Le durcissement d'API n'est pas un bac à sable au niveau de l'OS.** Le
+dataclass gelé de `RunTicket` et son registre privé sont un durcissement au
+niveau Python ; du code hostile dans le même processus pourrait les contourner.
+Une isolation forte exige des mesures au niveau du processus, non implémentées.
+La CLI est le seul point d'entrée pris en charge.
 
-Le périmètre d'exemple fourni est fictif. Les missions réelles exigent un
-enregistrement d'autorisation réel et lisible par machine — conservez-le hors de
-ce dépôt.
+<a id="sec-6"></a>
+## 6. Preuves et rapports honnêtes
 
-## 9. Le durcissement d'API n'est PAS un bac à sable
+Le journal d'audit est en ajout seul et chaîné par hachage ; toute manipulation
+ou réorganisation est détectée, et un échec d'audit est exposé explicitement
+plutôt que masqué. Les rapports distinguent les résultats complets, partiels et
+incomplets ; les résultats incomplets échouent fermés et ne fournissent aucun
+constat récolté.
 
-Le frozen dataclass de RunTicket et son registre privé constituent un
-**durcissement d'API**, pas un bac à sable — du code hostile intra-processus peut
-contourner toute vérification au niveau Python. Une isolation forte nécessite des
-mesures au niveau du processus (non implémentées). La CLI est le seul point
-d'entrée pris en charge.
+Deux limites méritent d'être énoncées clairement : la sortie des outils est
+enregistrée telle quelle et une sortie non vérifiée n'est jamais promue au rang
+de vulnérabilité confirmée ; et une troncature de la fin du journal ne peut être
+détectée que si une ancre de tête a été sauvegardée extérieurement.
 
-## 10. Limitations connues
+<a id="sec-7"></a>
+## 7. Compatibilité des plateformes et tests communautaires
 
-1. **Pas de bac à sable intra-processus** — voir section 9.
-2. **Windows d'abord** — le chemin de dépassement de délai sous Windows effectue
-   un nettoyage d'arbre de processus équipé sur le terrain (`taskkill /T /F`
-   s'exécute avant la destruction de la racine, tous les résultats consignés) ;
-   il est vérifié par un exercice contrôlé d'arbre à trois niveaux mais
-   **n'est pas une garantie absolue** — pas de vérification des résidus à
-   l'exécution, `rc=0` ne prouve pas que tout l'arbre a été nettoyé, et les
-   formes réelles des descendants de Nuclei ne sont pas vérifiées. Sur les
-   plateformes non Windows, la destruction d'arbre est ignorée (racine
-   uniquement). Le chemin de secours de nuclei suppose une disposition locale
-   `~/Tools/nuclei/`.
-3. **Aucune promesse d'exactitude de détection** — la sortie des outils est
-   enregistrée telle quelle ; les résultats non vérifiés ne sont jamais marqués
-   comme vulnérabilités confirmées.
-4. **Linux/macOS non vérifié** — la CI ne couvre pas les plateformes non Windows.
-5. **Troncature de la fin du journal** — détectable uniquement si une ancre head
-   externe a été sauvegardée ; les ancres du rapport servent uniquement aux
-   contrôles de cohérence.
-6. **Le planificateur Gen-1 est un modèle statique** — la planification est
-   déterministe, ni pilotée par modèle ni adaptative.
+**Les tests communautaires sont bienvenus. Aidez-nous à étendre la compatibilité des plateformes.**
 
-## 11. État du projet
+DVS est actuellement **orienté Windows**. Sous Windows, le chemin de timeout
+effectue un nettoyage tracé de l'arbre de processus (`taskkill /T /F` est
+exécuté avant la terminaison du processus racine, chaque résultat étant
+consigné) ; ce comportement a été exercé lors d'un exercice contrôlé mais ne
+garantit pas absolument l'absence de résidus. Sur les plateformes non Windows,
+la terminaison de l'arbre est omise et seul le processus racine est terminé. Le
+repli de chemin de `nuclei` suppose également une disposition d'installation
+locale particulière.
 
-- **Gen-1 est implémenté** : la porte d'autorisation, le moteur de politiques
-  (R0–R4), TaskGraph, le journal d'audit, les rapports structurés, le schéma
-  unifié des constatations et les adaptateurs `nuclei` / `bandit` / `gitleaks` /
-  `semgrep` existent en tant que chemins de code. Les suites de tests se trouvent
-  sous `tests/` — exécutez-les et fiez-vous à la sortie réelle ; ce dépôt ne formule
-  aucune affirmation anticipée de « tout au vert » ni de nombre de vérifications
-  réussies.
-- **Non vérifié / non implémenté** : la vérification de bout en bout avec les outils
-  réels n'est pas terminée ; la Phase B n'a pas été exécutée ; les éléments W1-03,
-  W1-04, W1-06 et CR-06 ainsi que la base de référence Semgrep réelle restent
-  ouverts ; la vérification Linux/macOS et le CI ne sont pas en place ; Gen-2 n'est
-  pas implémenté dans ce dépôt. La présence du code d'un adaptateur n'est pas la
-  preuve d'une exécution vérifiée, et le durcissement d'API n'est pas un bac à sable
-  au niveau du système d'exploitation (voir section 9).
-- Le packaging doit être jugé sur une construction de cette version ; les anciens
-  artefacts de construction ne constituent pas une preuve pour la version actuelle.
+Linux et macOS **n'ont pas été vérifiés** et la CI ne les couvre pas encore. Si
+vous exécutez DVS sur une autre plateforme, partagez dans une issue ce qui
+fonctionne et ce qui ne fonctionne pas — le comportement des adaptateurs, le
+nettoyage des processus et l'empaquetage sont particulièrement utiles. N'incluez
+pas de données de cibles réelles, d'identifiants ou de sorties d'analyses non autorisées.
 
-## 12. Licence et retours
+<a id="sec-8"></a>
+## 8. État du projet et orientation
+
+| | |
+|---|---|
+| **Livré (Gen-1)** | Porte d'autorisation, moteur de politiques (R0–R4), TaskGraph, journal d'audit, rapports structurés, Finding Schema unifié, et chemins de code des adaptateurs `nuclei` / `bandit` / `gitleaks` / `semgrep`. |
+| **En cours de construction / vérification** | Vérification de bout en bout avec outils réels, vérification et CI pour les plateformes non Windows, et vérification de l'empaquetage de cette version exacte. Les suites de tests sont dans `tests/` — exécutez-les et fiez-vous à leur sortie réelle ; ce dépôt n'affirme pas à l'avance que « tout est vert ». |
+| **Orientation à long terme** | Planification pilotée par modèle, isolation plus forte au niveau processus, et prise en charge plus large des plateformes. Ce ne sont que des orientations, **non implémentées** dans Gen-1. |
+
+La couche de planification actuelle est un modèle statique déterministe. La
+présence de code d'adaptateur ne prouve pas une exécution vérifiée de l'outil, et
+le durcissement d'API n'est pas un bac à sable au niveau de l'OS. L'empaquetage
+doit être jugé en construisant cette version ; d'anciens artefacts de build ne
+constituent pas une preuve pour la version actuelle. C'est une base
+d'ingénierie, pas un produit d'évaluation prêt pour la production.
+
+<a id="sec-9"></a>
+## 9. Contribuer et participer
+
+Une étoile aide d'autres personnes à découvrir le projet. Essayer DVS sur vos
+propres cibles de laboratoire, signaler vos observations et ouvrir une pull
+request sont tout aussi bienvenus. Voir [CONTRIBUTING.md](../../CONTRIBUTING.md)
+pour le guide complet.
+
+Façons d'aider :
+
+- **Adaptation de plateformes et tests de compatibilité** — comportement
+  Linux/macOS, nettoyage de l'arbre de processus, empaquetage.
+- **Intégration de fournisseurs / adaptateurs d'outils de sécurité** — nouvelles
+  intégrations respectant la porte d'autorisation et la conception fail-closed.
+- **Cas de tests et bases de régression** — vérifications reproductibles produisant des preuves.
+- **Documentation et traductions** — les six langues du README, exemples, clarté.
+- **Corrections de bogues et qualité de code** — modifications ciblées avec preuves exécutables.
+- **Recherche en sécurité** — suivez [SECURITY.md](../../SECURITY.md) ; n'ouvrez jamais une issue publique pour une vulnérabilité non divulguée.
+- **Expérience d'utilisation et idées de fonctionnalités** — ouvrez d'abord une issue pour convenir du périmètre.
+
+Utilisez **Issues** pour les bogues, les résultats de plateforme et les
+propositions ; utilisez les **Pull Requests** pour les modifications de code et de
+documentation. Ne joignez à aucune issue ou PR de données de cibles réelles,
+d'identifiants, d'enregistrements d'autorisation privés ou de sorties d'analyses
+non autorisées.
+
+<a id="sec-10"></a>
+## 10. Licence et liens
 
 - **Licence** : MIT — voir [LICENSE](../../LICENSE).
-- **Politique de sécurité** : voir [SECURITY.md](../../SECURITY.md).
-- **Contribuer** : voir [CONTRIBUTING.md](../../CONTRIBUTING.md).
-- Les issues et pull requests sont bienvenues. Pour les signalements liés à la
-  sécurité, suivez les consignes de SECURITY.md plutôt que d'ouvrir une issue
-  publique.
+- **Politique de sécurité** : [SECURITY.md](../../SECURITY.md).
+- **Guide de contribution** : [CONTRIBUTING.md](../../CONTRIBUTING.md).
+- **Issues et PR** : [ouvrir une issue](https://github.com/zyh798-cell/DualVerify-Sentinel/issues) · [ouvrir une PR](https://github.com/zyh798-cell/DualVerify-Sentinel/pulls).
+- **Traductions** : 中文 · 日本語 · 한국어 · Español · Français (voir le sélecteur de langue ci-dessus).
 
 ---
 
-<div align="center">
-<sub>DualVerify-Sentinel · Deterministic Security Validation Engine · MIT © 2026 zyh798-cell</sub>
-</div>
+<div align="center"><sub>DualVerify-Sentinel · Engineered for Trust. Built for Control. · MIT © 2026 zyh798-cell</sub></div>
