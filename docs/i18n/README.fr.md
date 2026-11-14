@@ -19,14 +19,14 @@ Exécution déterministe. Limites d'autorisation explicites. Preuves de sécurit
 [![Star](https://img.shields.io/badge/Star-grey?style=for-the-badge&logo=github)](https://github.com/zyh798-cell/DualVerify-Sentinel)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#sec-7)
-[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#sec-3)
-[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#sec-5)
-[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#sec-8)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#7-compatibilité-des-plateformes-et-tests-communautaires)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#3-prérequis)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#5-autorisation-et-sécurité)
+[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#8-état-du-projet-et-orientation)
 
 [English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · **Français**
 
-[Présentation](#sec-1) · [Fonctionnalités](#sec-2) · [Démarrage rapide](#sec-4) · [Sécurité](#sec-5) · [Tests de plateforme](#sec-7) · [Contribuer](#sec-9) · [Security](../../SECURITY.md)
+[Présentation](#1-quest-ce-que-dualverify-sentinel-) · [Fonctionnalités](#2-ce-quil-fait-aujourdhui) · [Démarrage rapide](#4-installation-et-démarrage-rapide) · [Sécurité](#5-autorisation-et-sécurité) · [Tests de plateforme](#7-compatibilité-des-plateformes-et-tests-communautaires) · [Contribuer](#9-contribuer-et-participer) · [Security](../../SECURITY.md)
 
 > ⭐ **Si ce projet vous est utile, attribuez-lui une étoile. Les tests communautaires et les contributions sont bienvenus.**
 
@@ -36,7 +36,6 @@ Exécution déterministe. Limites d'autorisation explicites. Preuves de sécurit
 
 ---
 
-<a id="sec-1"></a>
 ## 1. Qu'est-ce que DualVerify-Sentinel ?
 
 DualVerify-Sentinel (DVS) est un **moteur de validation de sécurité piloté par
@@ -54,7 +53,6 @@ runtime d'agents LLM, un système de décision autonome piloté par modèle, ou 
 bac à sable au niveau du système d'exploitation. Ce sont des orientations à long
 terme, pas des capacités actuelles.
 
-<a id="sec-2"></a>
 ## 2. Ce qu'il fait aujourd'hui
 
 Chaque capacité ci-dessous est appliquée par des chemins de code explicites, et non par le jugement d'un modèle.
@@ -72,7 +70,6 @@ Chaque capacité ci-dessous est appliquée par des chemins de code explicites, e
 > prouve pas une exécution vérifiée avec l'outil réel — la vérification de
 > bout en bout avec outils réels n'est pas terminée (voir la section 8).
 
-<a id="sec-3"></a>
 ## 3. Prérequis
 
 | Prérequis | Détail |
@@ -82,7 +79,6 @@ Chaque capacité ci-dessous est appliquée par des chemins de code explicites, e
 | OS | Windows **vérifié** ; Linux / macOS **pas encore vérifiés** — voir la section 7 |
 | Outils externes optionnels | `nuclei`, `bandit`, `gitleaks`, `semgrep` — ignorés proprement s'ils sont absents |
 
-<a id="sec-4"></a>
 ## 4. Installation et démarrage rapide
 
 ```bash
@@ -123,7 +119,6 @@ journal est inaccessible en écriture ou invérifiable, les résultats ne sont d
 
 `scripts/example-scope.json` est un exemple fictif, **pas une autorisation réelle**.
 
-<a id="sec-5"></a>
 ## 5. Autorisation et sécurité
 
 > ⚠️ **N'utilisez DVS que sur des systèmes que vous possédez ou exploitez, des
@@ -152,7 +147,6 @@ niveau Python ; du code hostile dans le même processus pourrait les contourner.
 Une isolation forte exige des mesures au niveau du processus, non implémentées.
 La CLI est le seul point d'entrée pris en charge.
 
-<a id="sec-6"></a>
 ## 6. Preuves et rapports honnêtes
 
 Le journal d'audit est en ajout seul et chaîné par hachage ; toute manipulation
@@ -166,7 +160,6 @@ enregistrée telle quelle et une sortie non vérifiée n'est jamais promue au ra
 de vulnérabilité confirmée ; et une troncature de la fin du journal ne peut être
 détectée que si une ancre de tête a été sauvegardée extérieurement.
 
-<a id="sec-7"></a>
 ## 7. Compatibilité des plateformes et tests communautaires
 
 **Les tests communautaires sont bienvenus. Aidez-nous à étendre la compatibilité des plateformes.**
@@ -186,7 +179,6 @@ fonctionne et ce qui ne fonctionne pas — le comportement des adaptateurs, le
 nettoyage des processus et l'empaquetage sont particulièrement utiles. N'incluez
 pas de données de cibles réelles, d'identifiants ou de sorties d'analyses non autorisées.
 
-<a id="sec-8"></a>
 ## 8. État du projet et orientation
 
 | | |
@@ -202,7 +194,6 @@ doit être jugé en construisant cette version ; d'anciens artefacts de build ne
 constituent pas une preuve pour la version actuelle. C'est une base
 d'ingénierie, pas un produit d'évaluation prêt pour la production.
 
-<a id="sec-9"></a>
 ## 9. Contribuer et participer
 
 Une étoile aide d'autres personnes à découvrir le projet. Essayer DVS sur vos
@@ -228,7 +219,6 @@ documentation. Ne joignez à aucune issue ou PR de données de cibles réelles,
 d'identifiants, d'enregistrements d'autorisation privés ou de sorties d'analyses
 non autorisées.
 
-<a id="sec-10"></a>
 ## 10. Licence et liens
 
 - **Licence** : MIT — voir [LICENSE](../../LICENSE).

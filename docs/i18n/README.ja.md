@@ -19,14 +19,14 @@
 [![Star](https://img.shields.io/badge/Star-grey?style=for-the-badge&logo=github)](https://github.com/zyh798-cell/DualVerify-Sentinel)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#sec-7)
-[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#sec-3)
-[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#sec-5)
-[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#sec-8)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#7-プラットフォーム互換性とコミュニティテスト)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#3-要件)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#5-認可と安全性)
+[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#8-プロジェクトの状態と方向性)
 
 [English](../../README.md) · [中文](README.zh-CN.md) · **日本語** · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md)
 
-[概要](#sec-1) · [実装機能](#sec-2) · [クイックスタート](#sec-4) · [認可と安全性](#sec-5) · [プラットフォームテスト](#sec-7) · [参加・貢献](#sec-9) · [Security](../../SECURITY.md)
+[概要](#1-dualverify-sentinel-とは) · [実装機能](#2-現在実装されている機能) · [クイックスタート](#4-インストールとクイックスタート) · [認可と安全性](#5-認可と安全性) · [プラットフォームテスト](#7-プラットフォーム互換性とコミュニティテスト) · [参加・貢献](#9-参加とコントリビューション) · [Security](../../SECURITY.md)
 
 > ⭐ **本プロジェクトが役に立つなら Star をお願いします。コミュニティによるテストと貢献も歓迎します。**
 
@@ -36,7 +36,6 @@
 
 ---
 
-<a id="sec-1"></a>
 ## 1. DualVerify-Sentinel とは
 
 DualVerify-Sentinel（DVS）は**ポリシー駆動のセキュリティ検証エンジン**です。すべての実行ステップは機械可読な認可スコープに対して検査され、改ざん検知可能な証跡ジャーナルに記録され、**フェイルクローズ**で動作します。認可の欠落・破損・期限切れはチェックのスキップではなく、拒否となります。
@@ -45,7 +44,6 @@ DualVerify-Sentinel（DVS）は**ポリシー駆動のセキュリティ検証�
 
 **現時点の DVS ではないもの**：汎用エージェント基盤、LLM エージェントランタイム、モデル駆動の自律判断システム、OS レベルのサンドボックス。これらは長期的な方向性であり、現在の機能ではありません。
 
-<a id="sec-2"></a>
 ## 2. 現在実装されている機能
 
 以下の機能はモデル判断ではなく、明示的なコードパスによって強制されます。
@@ -61,7 +59,6 @@ DualVerify-Sentinel（DVS）は**ポリシー駆動のセキュリティ検証�
 
 > アダプタは**コードとして実装されています**。コードの存在は実ツールの実行検証の証拠ではありません。実ツールのエンドツーエンド検証は未完了です（第 8 節参照）。
 
-<a id="sec-3"></a>
 ## 3. 要件
 
 | 項目 | 内容 |
@@ -71,7 +68,6 @@ DualVerify-Sentinel（DVS）は**ポリシー駆動のセキュリティ検証�
 | OS | Windows **検証済み**；Linux / macOS **未検証** — 第 7 節参照 |
 | 任意の外部ツール | `nuclei`、`bandit`、`gitleaks`、`semgrep` — 無い場合は安全にスキップ |
 
-<a id="sec-4"></a>
 ## 4. インストールとクイックスタート
 
 ```bash
@@ -108,7 +104,6 @@ dvs run --scope scripts/example-scope.json --mode safe_scan --target 127.0.0.1:8
 
 `scripts/example-scope.json` は架空の例であり、**実際の認可ではありません**。
 
-<a id="sec-5"></a>
 ## 5. 認可と安全性
 
 > ⚠️ **DVS は、自身が所有・運用するシステム、ローカル実験環境、または所有者から明示的な書面による認可を得たホストに対してのみ使用してください。**
@@ -124,14 +119,12 @@ dvs run --scope scripts/example-scope.json --mode safe_scan --target 127.0.0.1:8
 
 **API 強化は OS レベルのサンドボックスではありません。** `RunTicket` の frozen dataclass とプライベートレジストリは Python レベルの強化であり、プロセス内の悪意あるコードは回避できます。強力な分離にはプロセスレベルの措置が必要で、これは未実装です。サポートされる入口は CLI のみです。
 
-<a id="sec-6"></a>
 ## 6. 証跡と誠実なレポート
 
 監査ジャーナルは追記のみ・ハッシュチェーン付きで、改ざんや並べ替えを検知します。監査失敗は隠蔽せず明示されます。実行レポートは完全・部分・不完全を区別し、不完全な結果はフェイルクローズとなり検出結果として採用されません。
 
 2 つの境界を明記します。ツール出力はそのまま記録され、未検証の出力が確認済み脆弱性に格上げされることはありません。また、ジャーナル末尾の切り詰めは、外部に head アンカーが保存されている場合にのみ検知できます。
 
-<a id="sec-7"></a>
 ## 7. プラットフォーム互換性とコミュニティテスト
 
 **コミュニティによるテストを歓迎します。プラットフォーム互換性の拡大にご協力ください。**
@@ -140,7 +133,6 @@ DVS は現在 **Windows 優先**です。Windows のタイムアウト経路で�
 
 Linux と macOS は**未検証**で、CI もまだ対象にしていません。他プラットフォームで動作させた場合は、動作した点・しなかった点を issue で共有してください。アダプタ挙動、プロセス洗浄、パッケージングは特に有用です。実ターゲットのデータ、認証情報、未認可のスキャン出力は添付しないでください。
 
-<a id="sec-8"></a>
 ## 8. プロジェクトの状態と方向性
 
 | | |
@@ -151,7 +143,6 @@ Linux と macOS は**未検証**で、CI もまだ対象にしていません。
 
 現在の計画層は決定論的な静的テンプレートです。アダプタのコード存在はツール実行の検証を意味せず、API 強化は OS レベルのサンドボックスではありません。パッケージングは現バージョンを実際にビルドして判断する必要があり、古いビルド成果物は現バージョンの証拠になりません。これはエンジニアリング基盤であり、本番運用可能な評価製品ではありません。
 
-<a id="sec-9"></a>
 ## 9. 参加とコントリビューション
 
 Star はプロジェクトを見つけてもらう助けになります。自身の実験環境での試用、気付いた点の報告、Pull Request の作成も歓迎します。詳細は [CONTRIBUTING.md](../../CONTRIBUTING.md) を参照してください。
@@ -168,7 +159,6 @@ Star はプロジェクトを見つけてもらう助けになります。自身
 
 バグ・プラットフォーム結果・提案には **Issues**、コードとドキュメントの変更には **Pull Requests** を使用してください。実ターゲットのデータ、認証情報、私有の認可記録、未認可のスキャン出力を issue や PR に添付しないでください。
 
-<a id="sec-10"></a>
 ## 10. ライセンスとリンク
 
 - **ライセンス**：MIT — [LICENSE](../../LICENSE) を参照。

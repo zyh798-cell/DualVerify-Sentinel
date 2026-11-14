@@ -19,14 +19,14 @@
 [![Star](https://img.shields.io/badge/Star-grey?style=for-the-badge&logo=github)](https://github.com/zyh798-cell/DualVerify-Sentinel)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#sec-7)
-[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#sec-3)
-[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#sec-5)
-[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#sec-8)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#7-플랫폼-호환성과-커뮤니티-테스트)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#3-요구-사항)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#5-인가와-안전)
+[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#8-프로젝트-현황과-방향)
 
 [English](../../README.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md) · **한국어** · [Español](README.es.md) · [Français](README.fr.md)
 
-[개요](#sec-1) · [구현 기능](#sec-2) · [빠른 시작](#sec-4) · [인가와 안전](#sec-5) · [플랫폼 테스트](#sec-7) · [기여](#sec-9) · [Security](../../SECURITY.md)
+[개요](#1-dualverify-sentinel이란) · [구현 기능](#2-현재-구현된-기능) · [빠른 시작](#4-설치-및-빠른-시작) · [인가와 안전](#5-인가와-안전) · [플랫폼 테스트](#7-플랫폼-호환성과-커뮤니티-테스트) · [기여](#9-기여와-참여) · [Security](../../SECURITY.md)
 
 > ⭐ **프로젝트가 도움이 된다면 Star를 눌러 주세요. 커뮤니티 테스트와 기여도 환영합니다.**
 
@@ -36,7 +36,6 @@
 
 ---
 
-<a id="sec-1"></a>
 ## 1. DualVerify-Sentinel이란?
 
 DualVerify-Sentinel(DVS)는 **정책 기반 보안 검증 엔진**입니다. 모든 실행 단계는 기계가 읽을 수 있는 인가 범위에 대해 검사되고, 변조를 탐지할 수 있는 증거 저널에 기록되며, **실패 시 거부(fail-closed)** 방식으로 동작합니다. 인가가 없거나 손상되었거나 만료된 경우 검사를 건너뛰지 않고 거부합니다.
@@ -45,7 +44,6 @@ DualVerify-Sentinel(DVS)는 **정책 기반 보안 검증 엔진**입니다. 모
 
 **현재 DVS가 아닌 것**: 범용 에이전트 플랫폼, LLM 에이전트 런타임, 모델 기반 자율 의사결정 시스템, OS 수준 샌드박스. 이들은 장기 방향이며 현재 기능이 아닙니다.
 
-<a id="sec-2"></a>
 ## 2. 현재 구현된 기능
 
 아래 기능은 모델 판단이 아니라 명시적 코드 경로로 강제됩니다.
@@ -61,7 +59,6 @@ DualVerify-Sentinel(DVS)는 **정책 기반 보안 검증 엔진**입니다. 모
 
 > 어댑터는 **코드로 구현되어 있습니다**. 코드의 존재는 실제 도구 실행 검증의 증거가 아닙니다. 실제 도구 종단 간 검증은 아직 완료되지 않았습니다(8절 참조).
 
-<a id="sec-3"></a>
 ## 3. 요구 사항
 
 | 항목 | 내용 |
@@ -71,7 +68,6 @@ DualVerify-Sentinel(DVS)는 **정책 기반 보안 검증 엔진**입니다. 모
 | OS | Windows **검증됨**; Linux / macOS **미검증** — 7절 참조 |
 | 선택적 외부 도구 | `nuclei`, `bandit`, `gitleaks`, `semgrep` — 없으면 안전하게 건너뜀 |
 
-<a id="sec-4"></a>
 ## 4. 설치 및 빠른 시작
 
 ```bash
@@ -108,7 +104,6 @@ dvs run --scope scripts/example-scope.json --mode safe_scan --target 127.0.0.1:8
 
 `scripts/example-scope.json`은 가상의 예시이며 **실제 인가가 아닙니다**.
 
-<a id="sec-5"></a>
 ## 5. 인가와 안전
 
 > ⚠️ **DVS는 직접 소유·운영하는 시스템, 로컬 실험 대상, 또는 소유자로부터 명시적인 서면 인가를 받은 호스트에만 사용하세요.**
@@ -124,14 +119,12 @@ dvs run --scope scripts/example-scope.json --mode safe_scan --target 127.0.0.1:8
 
 **API 강화는 OS 수준 샌드박스가 아닙니다.** `RunTicket`의 frozen dataclass와 비공개 레지스트리는 Python 수준 강화이며, 프로세스 내 악성 코드는 우회할 수 있습니다. 강력한 격리에는 프로세스 수준 조치가 필요하며 현재 구현되어 있지 않습니다. 지원되는 진입점은 CLI뿐입니다.
 
-<a id="sec-6"></a>
 ## 6. 증거와 정직한 보고
 
 감사 저널은 추가 전용이며 해시 체인으로 연결되어 변조와 순서 변경을 탐지합니다. 감사 실패는 숨기지 않고 명시됩니다. 실행 보고서는 완전·부분·불완전 결과를 구분하며, 불완전한 결과는 실패 시 거부되어 수집된 발견 항목에 포함되지 않습니다.
 
 두 가지 경계를 분명히 합니다. 도구 출력은 있는 그대로 기록되며 검증되지 않은 출력이 확인된 취약점으로 승격되지 않습니다. 또한 저널 꼬리 잘림은 외부에 head 앵커가 저장되어 있을 때만 탐지할 수 있습니다.
 
-<a id="sec-7"></a>
 ## 7. 플랫폼 호환성과 커뮤니티 테스트
 
 **커뮤니티 테스트를 환영합니다. 플랫폼 호환성 확장에 도움을 주세요.**
@@ -140,7 +133,6 @@ DVS는 현재 **Windows 우선**입니다. Windows의 타임아웃 경로는 기
 
 Linux와 macOS는 **검증되지 않았고** CI도 아직 다루지 않습니다. 다른 플랫폼에서 실행해 보셨다면 동작한 부분과 그렇지 않은 부분을 issue로 공유해 주세요. 어댑터 동작, 프로세스 정리, 패키징이 특히 유용합니다. 실제 대상 데이터, 자격 증명, 인가 없는 스캔 출력은 첨부하지 마세요.
 
-<a id="sec-8"></a>
 ## 8. 프로젝트 현황과 방향
 
 | | |
@@ -151,7 +143,6 @@ Linux와 macOS는 **검증되지 않았고** CI도 아직 다루지 않습니다
 
 현재 계획 계층은 결정적 정적 템플릿입니다. 어댑터 코드의 존재는 도구 실행 검증을 뜻하지 않으며, API 강화는 OS 수준 샌드박스가 아닙니다. 패키징은 현재 버전을 실제로 빌드해 판단해야 하며, 오래된 빌드 산출물은 현재 버전의 증거가 되지 않습니다. 이는 엔지니어링 기반 계층이며 상용 수준의 평가 제품이 아닙니다.
 
-<a id="sec-9"></a>
 ## 9. 기여와 참여
 
 Star는 다른 사람들이 프로젝트를 발견하는 데 도움이 됩니다. 자신의 실험 환경에서 사용해 보고, 관찰한 내용을 알려주고, Pull Request를 보내는 것 모두 환영합니다. 자세한 내용은 [CONTRIBUTING.md](../../CONTRIBUTING.md)를 참조하세요.
@@ -168,7 +159,6 @@ Star는 다른 사람들이 프로젝트를 발견하는 데 도움이 됩니다
 
 버그·플랫폼 결과·제안에는 **Issues**, 코드 및 문서 변경에는 **Pull Requests**를 사용하세요. 실제 대상 데이터, 자격 증명, 사적 인가 기록, 인가 없는 스캔 출력을 issue나 PR에 첨부하지 마세요.
 
-<a id="sec-10"></a>
 ## 10. 라이선스와 링크
 
 - **라이선스**: MIT — [LICENSE](../../LICENSE) 참조.

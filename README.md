@@ -19,14 +19,14 @@ Deterministic execution. Explicit authorization boundaries. Auditable security e
 [![Star](https://img.shields.io/badge/Star-grey?style=for-the-badge&logo=github)](https://github.com/zyh798-cell/DualVerify-Sentinel)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#sec-7)
-[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#sec-3)
-[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#sec-5)
-[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#sec-8)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#7-platform-compatibility-and-community-testing)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#3-requirements)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#5-authorization-and-safety)
+[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#8-project-status-and-direction)
 
 **English** · [中文](docs/i18n/README.zh-CN.md) · [日本語](docs/i18n/README.ja.md) · [한국어](docs/i18n/README.ko.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md)
 
-[Overview](#sec-1) · [Capabilities](#sec-2) · [Quick start](#sec-4) · [Safety](#sec-5) · [Platform testing](#sec-7) · [Contribute](#sec-9) · [Security](SECURITY.md)
+[Overview](#1-what-is-dualverify-sentinel) · [Capabilities](#2-what-it-does-today) · [Quick start](#4-install-and-quick-start) · [Safety](#5-authorization-and-safety) · [Platform testing](#7-platform-compatibility-and-community-testing) · [Contribute](#9-contribute-and-get-involved) · [Security](SECURITY.md)
 
 > ⭐ **If this project is useful, please star the repository. Community testing and contributions are welcome.**
 
@@ -36,7 +36,6 @@ Deterministic execution. Explicit authorization boundaries. Auditable security e
 
 ---
 
-<a id="sec-1"></a>
 ## 1. What is DualVerify-Sentinel?
 
 DualVerify-Sentinel (DVS) is a **policy-driven security validation engine**: every
@@ -52,7 +51,6 @@ template**, not a model-driven or adaptive planner.
 a model-driven autonomous decision system, or an OS-level sandbox. These are
 long-term directions, not current capabilities.
 
-<a id="sec-2"></a>
 ## 2. What it does today
 
 Every capability below is enforced by explicit code paths, not by model judgment.
@@ -70,7 +68,6 @@ Every capability below is enforced by explicit code paths, not by model judgment
 > verified real-tool run — real-tool end-to-end verification has not been
 > completed (see section 8).
 
-<a id="sec-3"></a>
 ## 3. Requirements
 
 | Requirement | Detail |
@@ -80,7 +77,6 @@ Every capability below is enforced by explicit code paths, not by model judgment
 | OS | Windows **verified**; Linux / macOS **not yet verified** — see section 7 |
 | Optional external tools | `nuclei`, `bandit`, `gitleaks`, `semgrep` — skipped gracefully if absent |
 
-<a id="sec-4"></a>
 ## 4. Install and quick start
 
 ```bash
@@ -120,7 +116,6 @@ journal is unwritable or unverifiable, so results are not certified).
 
 `scripts/example-scope.json` is a fictional example — **not a real authorization**.
 
-<a id="sec-5"></a>
 ## 5. Authorization and safety
 
 > ⚠️ **Use DVS only against systems you own or operate, local lab targets, or
@@ -147,7 +142,6 @@ private registry are Python-level hardening; hostile in-process code could bypas
 them. Strong isolation requires process-level measures, which are not
 implemented. The CLI is the only supported entry point.
 
-<a id="sec-6"></a>
 ## 6. Evidence and honest reporting
 
 The audit journal is append-only and hash-chained; tampering or reordering is
@@ -159,7 +153,6 @@ Two boundaries are worth stating plainly: tool output is recorded verbatim and
 unverified output is never promoted to a confirmed vulnerability; and a journal
 tail truncation can only be detected when an external head anchor has been saved.
 
-<a id="sec-7"></a>
 ## 7. Platform compatibility and community testing
 
 **Community testing is welcome. Help expand platform compatibility.**
@@ -176,7 +169,6 @@ you run DVS on another platform, please share what works and what does not via a
 issue — adapter behaviour, process cleanup and packaging are especially useful.
 Please do not include real target data, credentials or unauthorized scan output.
 
-<a id="sec-8"></a>
 ## 8. Project status and direction
 
 | | |
@@ -191,7 +183,6 @@ OS-level sandbox. Packaging must be judged by a build of this version; older
 build artifacts are not evidence for the current release. This is an engineering
 foundation, not a production-ready assessment product.
 
-<a id="sec-9"></a>
 ## 9. Contribute and get involved
 
 A star helps other people find the project. Trying DVS against your own lab
@@ -215,7 +206,6 @@ Use **Issues** for bugs, platform results and proposals; use **Pull Requests** f
 code and documentation changes. Do not attach real target data, credentials,
 private authorization records or unauthorized scan output to any issue or PR.
 
-<a id="sec-10"></a>
 ## 10. License and links
 
 - **License**: MIT — see [LICENSE](LICENSE).

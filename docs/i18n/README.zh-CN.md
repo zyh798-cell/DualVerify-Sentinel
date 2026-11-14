@@ -19,14 +19,14 @@
 [![Star](https://img.shields.io/badge/Star-grey?style=for-the-badge&logo=github)](https://github.com/zyh798-cell/DualVerify-Sentinel)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#sec-7)
-[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#sec-3)
-[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#sec-5)
-[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#sec-8)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20Verified-085041)](#7-平台兼容性与社区测试)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Standard%20Library%20Only-0C447C)](#3-环境要求)
+[![Use](https://img.shields.io/badge/Use-Authorized%20Testing%20Only-BA7517)](#5-授权与安全)
+[![Status](https://img.shields.io/badge/Status-Gen--1-0C447C)](#8-项目状态与方向)
 
 [English](../../README.md) · **中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md)
 
-[项目定位](#sec-1) · [已实现能力](#sec-2) · [快速开始](#sec-4) · [授权与安全](#sec-5) · [平台测试](#sec-7) · [参与贡献](#sec-9) · [Security](../../SECURITY.md)
+[项目定位](#1-什么是-dualverify-sentinel) · [已实现能力](#2-当前已实现的能力) · [快速开始](#4-安装与快速开始) · [授权与安全](#5-授权与安全) · [平台测试](#7-平台兼容性与社区测试) · [参与贡献](#9-参与贡献) · [Security](../../SECURITY.md)
 
 > ⭐ **如果本项目对你有帮助，欢迎点 Star。社区测试与贡献同样欢迎。**
 
@@ -36,7 +36,6 @@
 
 ---
 
-<a id="sec-1"></a>
 ## 1. 什么是 DualVerify-Sentinel？
 
 DualVerify-Sentinel（DVS）是一个**策略驱动的安全验证引擎**：每个执行步骤都会依据机器可读的授权范围进行校验、写入可防篡改的证据日志，并采用**失败即拒绝（fail-closed）**——授权缺失、损坏或过期时只会拒绝执行，绝不会跳过检查。
@@ -45,7 +44,6 @@ DualVerify-Sentinel（DVS）是一个**策略驱动的安全验证引擎**：每
 
 **当前 DVS 不是**：通用 Agent 平台、LLM Agent 运行时、模型驱动的自主决策系统，也不是操作系统级沙箱。这些属于长期方向，不是现有能力。
 
-<a id="sec-2"></a>
 ## 2. 当前已实现的能力
 
 以下能力均由明确的代码路径强制执行，而非模型判断。
@@ -61,7 +59,6 @@ DualVerify-Sentinel（DVS）是一个**策略驱动的安全验证引擎**：每
 
 > 适配器是**已实现的代码**。代码存在不等于已完成真实工具的运行验证——真实工具端到端验证尚未完成（见第 8 节）。
 
-<a id="sec-3"></a>
 ## 3. 环境要求
 
 | 项目 | 说明 |
@@ -71,7 +68,6 @@ DualVerify-Sentinel（DVS）是一个**策略驱动的安全验证引擎**：每
 | 操作系统 | Windows **已验证**；Linux / macOS **尚未验证** — 见第 7 节 |
 | 可选外部工具 | `nuclei`、`bandit`、`gitleaks`、`semgrep`；缺失时优雅跳过 |
 
-<a id="sec-4"></a>
 ## 4. 安装与快速开始
 
 ```bash
@@ -108,7 +104,6 @@ dvs run --scope scripts/example-scope.json --mode safe_scan --target 127.0.0.1:8
 
 `scripts/example-scope.json` 是虚构示例，**不是真实授权**。
 
-<a id="sec-5"></a>
 ## 5. 授权与安全
 
 > ⚠️ **仅可对你自己拥有或运营的系统、本地实验目标，或已取得所有者明确书面授权的主机使用 DVS。**
@@ -124,14 +119,12 @@ dvs run --scope scripts/example-scope.json --mode safe_scan --target 127.0.0.1:8
 
 **API 加固不是操作系统级沙箱。** `RunTicket` 的冻结 dataclass 与私有注册表属于 Python 层加固，进程内的恶意代码仍可能绕过。强隔离需要进程级措施，目前尚未实现。CLI 是唯一受支持的入口。
 
-<a id="sec-6"></a>
 ## 6. 证据与诚实报告
 
 审计日志仅追加且以哈希链相连，可检测篡改与重排；审计失败会被显式暴露而不是隐藏。运行报告区分完整、部分与不完整结果；不完整结果失败即拒绝，不会贡献采集到的发现。
 
 有两点边界值得明确说明：工具输出按原样记录，未经核实的输出不会被提升为已确认漏洞；日志尾部截断只有在外部保存过 head 锚点时才能被检测。
 
-<a id="sec-7"></a>
 ## 7. 平台兼容性与社区测试
 
 **欢迎社区测试，帮助我们扩展平台兼容性。**
@@ -140,7 +133,6 @@ DVS 目前以 **Windows 优先**。在 Windows 上，超时路径会执行有记
 
 Linux 与 macOS **尚未验证**，CI 也尚未覆盖。如果你在其他平台上运行了 DVS，欢迎通过 issue 分享可用与不可用的部分 —— 适配器行为、进程清理和打包尤其有价值。请勿附带真实目标数据、凭据或未经授权的扫描输出。
 
-<a id="sec-8"></a>
 ## 8. 项目状态与方向
 
 | | |
@@ -151,7 +143,6 @@ Linux 与 macOS **尚未验证**，CI 也尚未覆盖。如果你在其他平台
 
 当前计划层是确定性的静态模板；适配器代码存在不等于工具运行已验证，API 加固也不是操作系统级沙箱。打包状态必须由当前版本实际构建来判定，旧构建产物不能作为当前版本的证据。这是工程基础层，不是生产就绪的评估产品。
 
-<a id="sec-9"></a>
 ## 9. 参与贡献
 
 点一个 Star 能帮助更多人发现本项目；在自己的实验目标上试用 DVS、反馈观察结果、提交 Pull Request 同样受欢迎。完整指南见 [CONTRIBUTING.md](../../CONTRIBUTING.md)。
@@ -168,7 +159,6 @@ Linux 与 macOS **尚未验证**，CI 也尚未覆盖。如果你在其他平台
 
 错误、平台结果与建议请使用 **Issues**；代码与文档改动请使用 **Pull Requests**。任何 issue 或 PR 都不要附带真实目标数据、凭据、私有授权记录或未经授权的扫描输出。
 
-<a id="sec-10"></a>
 ## 10. 许可与链接
 
 - **许可**：MIT — 见 [LICENSE](../../LICENSE)。
